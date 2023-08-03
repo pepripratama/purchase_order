@@ -37,6 +37,7 @@ class Barang extends CI_Controller
 				'kode' => $artikel->kode_artikel,
 				'nama' => $artikel->nama_artikel,
 				'satuan' => $artikel->satuan,
+				'kategori' => $artikel->kategori,
 				'retail' => $artikel->retail,
 				'grosir' => $artikel->grosir,
 				'grosir_10' => $artikel->grosir_10,
@@ -65,6 +66,7 @@ class Barang extends CI_Controller
 		$data['kode_artikel'] = $this->input->post('kode');
 		$data['nama_artikel'] = $this->input->post('barang');
 		$data['satuan'] = $this->input->post('satuan');
+		$data['kategori'] = $this->input->post('kategori');
 		$data['updated_at'] = date('Y-m-d');
 		$data['id_user'] = $id_user;
 
@@ -88,6 +90,7 @@ class Barang extends CI_Controller
 
 		$data['nama_artikel'] = $this->input->post('barang');
 		$data['satuan'] = $this->input->post('satuan');
+		$data['kategori'] = $this->input->post('kategori');
 		$data['updated_at'] = date('Y-m-d');
 		$data['id_user'] = $id_user;
 

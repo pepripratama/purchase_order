@@ -19,19 +19,19 @@
     <button type="button" class="btn btn-success btn-sm float-right btn_tambah" data-toggle="modal" data-target="#modal_tambah">
       <i class="fas fa-plus"></i> Tambah Barang
     </button>
-    <table class="table" id="datatable">
+    <table class="table table-striped" id="datatable">
       <thead>
         <tr>
           <th>No</th>
-          <th>Kode</th>
+          <th style="width:13%">Kode</th>
           <th>Barang</th>
-          <th>Satuan</th>
-          <th style="width:9%">Retail</th>
-          <th style="width:9%">Grosir</th>
-          <th style="width:9%">Grosir_10</th>
-          <th style="width:9%">HET_Jawa</th>
-          <th style="width:9%">Indo_Barat</th>
-          <th style="width:9%">SP</th>
+          <th style="width:8%">Satuan</th>
+          <th style="width:8%">Retail</th>
+          <th style="width:8%">Grosir</th>
+          <th style="width:8%">Grosir_10</th>
+          <th style="width:8%">HET_Jawa</th>
+          <th style="width:8%">Indo_Barat</th>
+          <th style="width:8%">SP</th>
           <th style="width:9%">Menu</th>
         </tr>
       </thead>
@@ -40,7 +40,15 @@
         foreach ($barang as $k) { ?>
           <tr>
             <td><?= $no++ ?></td>
-            <td><?= $k->kode_artikel ?></td>
+            <td>
+              <?= $k->kode_artikel ?>
+              <br>
+              <?php
+              if ($k->kategori == 1) {
+                echo "<span class='badge badge-danger badge-sm'>Barang X</span>";
+              }
+              ?>
+            </td>
             <td><?= $k->nama_artikel ?></td>
             <td><?= $k->satuan ?></td>
             <td>Rp <?= number_format($k->retail) ?></td>
@@ -102,13 +110,20 @@
                 </select>
               </div>
               <div class="form-group">
-                <label for="">Retail :</label>
-                <input type="text" name="retail" id="retail_add" class="form-control form-control-sm" required>
+                <label for="">Kategori :</label>
+                <select name="kategori" class="form-control form-control-sm" required>
+                  <option value="">- Pilih kategori -</option>
+                  <option value="0">Barang Normal</option>
+                  <option value="1">Barang X</option>
+                </select>
               </div>
-
             </div>
             <div class="col-md-2"></div>
             <div class="col-md-5">
+              <div class="form-group">
+                <label for="">Retail :</label>
+                <input type="text" name="retail" id="retail_add" class="form-control form-control-sm" required>
+              </div>
               <div class="form-group">
                 <label for="">Grosir :</label>
                 <input type="text" name="grosir" id="grosir_add" class="form-control form-control-sm" required>
@@ -178,13 +193,22 @@
                 </select>
               </div>
               <div class="form-group">
-                <label for="">Retail :</label>
-                <input type="text" name="retail" id="retail" class="form-control form-control-sm" required>
+                <label for="">Kategori :</label>
+                <select name="kategori" id="kategori" class="form-control form-control-sm" required>
+                  <option value="">- Pilih kategori -</option>
+                  <option value="0">Barang Normal</option>
+                  <option value="1">Barang X</option>
+                </select>
               </div>
+
 
             </div>
             <div class="col-md-2"></div>
             <div class="col-md-5">
+              <div class="form-group">
+                <label for="">Retail :</label>
+                <input type="text" name="retail" id="retail" class="form-control form-control-sm" required>
+              </div>
               <div class="form-group">
                 <label for="">Grosir :</label>
                 <input type="text" name="grosir" id="grosir" class="form-control form-control-sm" required>
@@ -249,6 +273,7 @@
           $('#kode').val(response.kode);
           $('#barang').val(response.nama);
           $('#satuan_input').val(response.satuan);
+          $('#kategori').val(response.kategori);
           $('#retail').val(formatRupiah(response.retail));
           $('#grosir').val(formatRupiah(response.grosir));
           $('#grosir_10').val(formatRupiah(response.grosir_10));
