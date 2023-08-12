@@ -14,7 +14,7 @@ class Customer extends CI_Controller
 
 	public function index()
 	{
-		$data['view'] = 'Customer';
+		$data['view'] = 'admin/customer';
 		$data['title'] = 'Data Customer';
 		$data['customer'] = $this->db->query("SELECT tc.*, tu.nama as sales from tb_customer tc
 		left join tb_user tu on tc.id_sales = tu.id
@@ -38,6 +38,7 @@ class Customer extends CI_Controller
 			$response = array(
 				'id_cust' => $artikel->id,
 				'nama_customer' => $artikel->nama_customer,
+				'no_pelanggan' => $artikel->no_pelanggan,
 				'alamat' => $artikel->alamat,
 				'area' => $artikel->area,
 				'tipe_harga' => $artikel->tipe_harga,
@@ -64,6 +65,7 @@ class Customer extends CI_Controller
 		}
 
 		$data['nama_customer'] = $this->input->post('customer');
+		$data['no_pelanggan'] = $this->input->post('no_pelanggan');
 		$data['alamat'] = $this->input->post('alamat');
 		$data['area'] = $this->input->post('area');
 		$data['alamat'] = $this->input->post('alamat');
@@ -92,6 +94,7 @@ class Customer extends CI_Controller
 		}
 
 		$data['nama_customer'] = $this->input->post('customer');
+		$data['no_pelanggan'] = $this->input->post('no_pelanggan');
 		$data['alamat'] = $this->input->post('alamat');
 		$data['area'] = $this->input->post('area');
 		$data['alamat'] = $this->input->post('alamat');

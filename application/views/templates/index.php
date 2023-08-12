@@ -22,38 +22,30 @@
                 <a class="nav-link" href="<?= base_url('Dashboard') ?>"><i class="fas fa-chart-line"></i> Dashboard</a>
               </li>
               <?php if ($role_id == 1) { ?>
-                <li class="nav-item <?= ($title == 'Input Penilaian') ? 'active' : '' ?>">
-                  <a class="nav-link" href="<?= base_url('Input_nilai') ?>"><i class="fas fa-edit"></i> Input Penilaian</a>
-                </li>
-              <?php } ?>
-              <?php if ($role_id == 4) { ?>
-                <li class="nav-item <?= ($title == 'Penilaian') ? 'active' : '' ?>">
-                  <a class="nav-link" href="<?= base_url('Penilaian') ?>"><i class="fas fa-money-bill"></i> Pembayaran</a>
-                </li>
-              <?php } ?>
-              <?php if ($role_id == 2 or $role_id == 2) { ?>
-                <li class="nav-item <?= ($title == 'Approval') ? 'active' : '' ?>">
-                  <a class="nav-link" href="<?= base_url('Approval') ?>"><i class="fas fa-check"></i> Approval</a>
-                </li>
-              <?php } ?>
-              <?php if ($role_id == 4) { ?>
-                <li class="nav-item dropdown <?= ($title == 'Data Master') ? 'active' : '' ?>">
+                <li class="nav-item dropdown <?= ($title == 'Data Barang' || $title == 'Data Customer') ? 'active' : '' ?>">
                   <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-expanded="false">
                     <i class="fas fa-database"></i> Data Master
                   </a>
                   <div class="dropdown-menu">
-                    <a class="dropdown-item" href="<?= base_url('Karyawan') ?>">Karyawan</a>
-                    <a class="dropdown-item" href="<?= base_url('Nilai') ?>">Nilai</a>
+                    <a class="dropdown-item <?= ($title == 'Data Barang') ? 'active' : '' ?>" href="<?= base_url('Barang') ?>">Barang</a>
+                    <a class="dropdown-item <?= ($title == 'Data Customer') ? 'active' : '' ?>" href="<?= base_url('Customer') ?>">Customer</a>
                   </div>
                 </li>
+                <li class="nav-item dropdown <?= ($title == 'Sales Order' || $title == 'history Order') ? 'active' : '' ?>">
+                  <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-expanded="false">
+                    <i class="fas fa-cart-plus"></i> Sales Order
+                  </a>
+                  <div class="dropdown-menu">
+                    <a class="dropdown-item <?= ($title == 'Sales Order') ? 'active' : '' ?>" href="<?= base_url('Order') ?>"> Sales Order</a>
+                    <a class="dropdown-item <?= ($title == 'history Order') ? 'active' : '' ?>" href="<?= base_url('Order/history') ?>">History</a>
+                  </div>
+                </li>
+                <li class="nav-item <?= ($title == 'Data User') ? 'active' : '' ?>">
+                  <a class="nav-link" href="<?= base_url('User') ?>"><i class="fas fa-user"></i> User</a>
+                </li>
               <?php } ?>
-              <li class="nav-item dropdown <?= ($title == 'Laporan') ? 'active' : '' ?>">
-                <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-expanded="false">
-                  <i class="fas fa-book"></i> Laporan
-                </a>
-                <div class="dropdown-menu">
-                  <a class="dropdown-item" href="<?= base_url('Laporan') ?>">History Pembayaran</a>
-              </li>
+
+
             </ul>
             <ul class="navbar-nav ml-auto">
 
@@ -137,22 +129,25 @@
   <!-- Password Modal-->
   <div class="modal fade" id="passwordModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Silahkan masukkan password baru anda.</h5>
-          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">×</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <div class="form-group">
-            <input type="password" class="form-control">
+      <form action="<?= base_url('Auth/gantiPass') ?>" method="post">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Silahkan masukkan password baru anda.</h5>
+            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="form-group">
+              <input type="password" name="pass" class="form-control" required>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-secondary btn-sm" type="button" data-dismiss="modal">Batal</button>
+            <button class="btn btn-primary btn-sm" type="submit">Simpan</button>
           </div>
         </div>
-        <div class="modal-footer">
-          <button class="btn btn-secondary" type="button" data-dismiss="modal">Batal</button>
-          <a class="btn btn-primary" href="<?= base_url('auth/logout') ?>">Simpan</a>
-        </div>
-      </div>
+      </form>
+
     </div>
   </div>

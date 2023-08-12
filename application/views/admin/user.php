@@ -78,6 +78,7 @@
           <div class="form-group">
             <label for="">Username :</label>
             <input type="text" name="username" id="username_add" class="form-control form-control-sm" required>
+            <small class="text-danger">( Untuk admin Harus sama dg pengguna di easy accounting )</small>
           </div>
           <div class="form-group">
             <label for="">Password :</label>
@@ -122,6 +123,7 @@
           <div class="form-group">
             <label for="">Username :</label>
             <input type="text" name="username" id="username" class="form-control form-control-sm" required>
+            <small class="text-danger">( Untuk admin Harus sama dg pengguna di easy accounting )</small>
           </div>
           <div class="form-group">
             <label for="">Role :</label>
@@ -244,7 +246,7 @@
 <script>
   $(document).ready(function() {
     // Fungsi untuk melakukan pemeriksaan kode barang saat pengguna mengetikkan
-    $("#username_add").on("blur", function() {
+    $("#username_add, #username").on("blur", function() {
       var Username = $(this).val();
 
       // Mengirimkan kode barang ke server untuk memeriksa keberadaannya di database
@@ -267,7 +269,7 @@
               'border': '1px solid red'
             });
             $('#username_add').val('');
-            $('#username_add').focus();
+            $('#username').val('');
           }
         }
       });

@@ -22,7 +22,8 @@
     <table class="table table-striped" id="datatable">
       <thead>
         <tr>
-          <th>No</th>
+          <th>#</th>
+          <th>No. Pelanggan</th>
           <th style="width:20%">Nama Customer</th>
           <th>Area</th>
           <th>Min Order</th>
@@ -37,6 +38,7 @@
         foreach ($customer as $k) { ?>
           <tr>
             <td><?= $no++ ?></td>
+            <td><?= $k->no_pelanggan ?></td>
             <td><?= $k->nama_customer ?></td>
             <td><?= $k->area ?></td>
             <td>Rp <?= number_format($k->minimum_order) ?></td>
@@ -77,12 +79,17 @@
           <div class="row">
             <div class="col-md-5">
               <div class="form-group">
+                <label for="">No. Pelanggan:</label>
+                <input type="text" name="no_pelanggan" class="form-control form-control-sm" required>
+                <small class="text-danger">( No pelanggan dari easy accounting )</small>
+              </div>
+              <div class="form-group">
                 <label for="">Nama Customer:</label>
                 <input type="text" name="customer" id="customer_add" class="form-control form-control-sm" required>
               </div>
               <div class="form-group">
                 <label for="">Alamat :</label>
-                <textarea name="alamat" class="form-control form-control-sm" required rows="5"></textarea>
+                <textarea name="alamat" class="form-control form-control-sm" required rows="4"></textarea>
               </div>
               <div class="form-group">
                 <label for="">Area :</label>
@@ -160,6 +167,11 @@
         <div class="modal-body">
           <div class="row">
             <div class="col-md-5">
+              <div class="form-group">
+                <label for="">No. Pelanggan:</label>
+                <input type="text" name="no_pelanggan" id="no_pelanggan" class="form-control form-control-sm" required>
+                <small class="text-danger">( No pelanggan dari easy accounting )</small>
+              </div>
               <div class="form-group">
                 <label for="">Nama Customer:</label>
                 <input type="text" name="customer" id="customer" class="form-control form-control-sm" required>
@@ -257,6 +269,7 @@
         // Mengisi form dengan data artikel
         if (response) {
           $('#id_cust').val(response.id_cust);
+          $('#no_pelanggan').val(response.no_pelanggan);
           $('#customer').val(response.nama_customer);
           $('#alamat').val(response.alamat);
           $('#area').val(response.area);

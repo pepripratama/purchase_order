@@ -14,7 +14,7 @@ class User extends CI_Controller
 
 	public function index()
 	{
-		$data['view'] = 'User';
+		$data['view'] = 'admin/user';
 		$data['title'] = 'Data User';
 		$data['user'] = $this->db->query("SELECT * from tb_user where status = 1  order by id desc")->result();
 		$this->load->view('templates/header.php', $data);

@@ -28,14 +28,17 @@ function tampil_alert($type, $title, $text)
 
 function hitung_diskon($harga_satuan, $diskon)
 {
+	$diskon_decimal = str_replace('%', '', $diskon);
+
 	if (strpos($diskon, "+") !== FALSE) {
-		$pecah_diskon = explode("+", $diskon);
+		$pecah_diskon = explode("+", $diskon_decimal);
 		$harga_diskon = $harga_satuan;
+
 		foreach ($pecah_diskon as $pd) {
 			$harga_diskon = $harga_diskon - ($harga_diskon * $pd / 100);
 		}
 	} else {
-		$harga_diskon = $harga_satuan - ($harga_satuan * $diskon / 100);
+		$harga_diskon = $harga_satuan - ($harga_satuan * $diskon_decimal / 100);
 	}
 
 	return $harga_diskon;
@@ -61,4 +64,29 @@ function get_size($artikel)
 	} else {
 		$size = "-";
 	}
+	return $size;
+}
+function jenis_so($so)
+{
+	if ($so == 0) {
+		$hasil = "SO PUTUS";
+	} else if ($so == 1) {
+		$hasil = "SO SPECIAL PRICE";
+	} else if ($so == 2) {
+		$hasil = "SO BARANG X";
+	} else {
+		$hasil = "-";
+	}
+	return $hasil;
+}
+function status_so($so)
+{
+	if ($so == 0) {
+		$hasil = "<span class='badge badge-danger badge-sm'>Belum di Export</span>";
+	} else if ($so == 1) {
+		$hasil = "<span class='badge badge-success badge-sm'>Sudah di Export</span>";
+	} else {
+		$hasil = "-";
+	}
+	return $hasil;
 }

@@ -14,7 +14,7 @@ class Barang extends CI_Controller
 
 	public function index()
 	{
-		$data['view'] = 'Barang';
+		$data['view'] = 'admin/barang';
 		$data['title'] = 'Data Barang';
 		$data['barang'] = $this->db->query("SELECT * from tb_barang where status = 1  order by id desc")->result();
 		$this->load->view('templates/header.php', $data);
