@@ -19,7 +19,7 @@ class Customer extends CI_Controller
 		$data['customer'] = $this->db->query("SELECT tc.*, tu.nama as sales from tb_customer tc
 		left join tb_user tu on tc.id_sales = tu.id
 		where tc.status = 1 order by tc.id desc")->result();
-		$data['sales'] = $this->db->query("SELECT * from tb_user where id_role = 2 order by id desc")->result();
+		$data['sales'] = $this->db->query("SELECT * from tb_user where id_role = 2 and status = 1 order by id desc")->result();
 		$this->load->view('templates/header.php', $data);
 		$this->load->view('templates/index.php', $data);
 		$this->load->view('templates/footer.php');
@@ -116,6 +116,20 @@ class Customer extends CI_Controller
 		$this->db->query("UPDATE tb_customer set status = 0 where id ='$id'");
 		tampil_alert('success', 'DI HAPUS', 'Data Customer berhasil di hapus');
 		redirect(base_url('Customer'));
+	}
+	// cek kode apakah sudah ada
+	public function no_pelanggan()
+	{
+		// Ambil data kode barang yang dikirim melalui AJAX
+		$kode = $this->input->post('kode');
+
+		// Lakukan pengecekan kode barang di database
+		$query = $this->db->get_where('tb_customer', array('no_pelanggan' => $kode, 'status' => 1));
+		$result = $query->row();
+
+		// Buat respons dalam format JSON
+		$response = array('exist' => ($result !== null));
+		echo json_encode($response);
 	}
 	// cek kode apakah sudah ada
 	public function cek_customer()

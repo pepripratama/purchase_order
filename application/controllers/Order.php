@@ -23,7 +23,7 @@ class Order extends CI_Controller
 		$data['title'] = 'Sales Order';
 		$data['detail']	= $this->db->query("SELECT tor.*, tc.nama_customer, tc.tipe_harga, tu.nama as sales from tb_order tor
 		join tb_customer tc on tor.id_customer = tc.id
-		join tb_user tu on tc.id_sales = tu.id where tor.status = 0
+		left join tb_user tu on tc.id_sales = tu.id where tor.status = 0
 		")->result();
 		$this->load->view('templates/header.php', $data);
 		$this->load->view('templates/index.php', $data);
@@ -208,7 +208,7 @@ class Order extends CI_Controller
 		$data['title'] = 'history Order';
 		$data['detail']	= $this->db->query("SELECT tor.*, tc.nama_customer, tc.tipe_harga, tu.nama as sales from tb_order tor
 		join tb_customer tc on tor.id_customer = tc.id
-		join tb_user tu on tc.id_sales = tu.id where tor.status = 1
+		left join tb_user tu on tc.id_sales = tu.id where tor.status = 1
 		")->result();
 		$this->load->view('templates/header.php', $data);
 		$this->load->view('templates/index.php', $data);

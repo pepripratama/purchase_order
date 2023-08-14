@@ -80,7 +80,7 @@
             <div class="col-md-5">
               <div class="form-group">
                 <label for="">No. Pelanggan:</label>
-                <input type="text" name="no_pelanggan" class="form-control form-control-sm" required>
+                <input type="text" name="no_pelanggan" id="no_pelanggan" class="form-control form-control-sm" required>
                 <small class="text-danger">( No pelanggan dari easy accounting )</small>
               </div>
               <div class="form-group">
@@ -169,7 +169,7 @@
             <div class="col-md-5">
               <div class="form-group">
                 <label for="">No. Pelanggan:</label>
-                <input type="text" name="no_pelanggan" id="no_pelanggan" class="form-control form-control-sm" required>
+                <input type="text" name="no_pelanggan" id="no_pelanggan_edit" class="form-control form-control-sm" required>
                 <small class="text-danger">( No pelanggan dari easy accounting )</small>
               </div>
               <div class="form-group">
@@ -269,7 +269,7 @@
         // Mengisi form dengan data artikel
         if (response) {
           $('#id_cust').val(response.id_cust);
-          $('#no_pelanggan').val(response.no_pelanggan);
+          $('#no_pelanggan_edit').val(response.no_pelanggan);
           $('#customer').val(response.nama_customer);
           $('#alamat').val(response.alamat);
           $('#area').val(response.area);
@@ -322,33 +322,67 @@
 <script>
   $(document).ready(function() {
     // Fungsi untuk melakukan pemeriksaan kode barang saat pengguna mengetikkan
-    $("#customer_add").on("blur", function() {
+    $("#customer_add, #customer").on("blur", function() {
       var kodeBarang = $(this).val();
-
-      // Mengirimkan kode barang ke server untuk memeriksa keberadaannya di database
-      $.ajax({
-        url: "<?php echo base_url('Customer/cek_customer'); ?>",
-        method: "POST",
-        data: {
-          kode: kodeBarang
-        },
-        dataType: "json",
-        success: function(response) {
-          if (response.exist) {
-            // Jika kode sudah ada di database, tampilkan pesan
-            Swal.fire(
-              'Nama Customer sudah ada',
-              'Harap cek kembali / gunakan nama yang lain',
-              'info'
-            );
-            $('#customer_add').css({
-              'border': '1px solid red'
-            });
-            $('#customer_add').val('');
-            $('#customer_add').focus();
+      if (kodeBarang != "") {
+        // Mengirimkan kode barang ke server untuk memeriksa keberadaannya di database
+        $.ajax({
+          url: "<?php echo base_url('Customer/cek_customer'); ?>",
+          method: "POST",
+          data: {
+            kode: kodeBarang
+          },
+          dataType: "json",
+          success: function(response) {
+            if (response.exist) {
+              // Jika kode sudah ada di database, tampilkan pesan
+              Swal.fire(
+                'Nama Customer sudah ada',
+                'Harap cek kembali / gunakan nama yang lain',
+                'info'
+              );
+              $('#customer_add').css({
+                'border': '1px solid red'
+              });
+              $('#customer_add').val('');
+              $('#customer_add').focus();
+            }
           }
-        }
-      });
+        });
+      }
+
+    });
+
+    // cek no pelanggan
+    $("#no_pelanggan, #no_pelanggan_edit").on("blur", function() {
+      var kodeBarang = $(this).val();
+      if (kodeBarang != "") {
+        // Mengirimkan kode barang ke server untuk memeriksa keberadaannya di database
+        $.ajax({
+          url: "<?php echo base_url('Customer/no_pelanggan'); ?>",
+          method: "POST",
+          data: {
+            kode: kodeBarang
+          },
+          dataType: "json",
+          success: function(response) {
+            if (response.exist) {
+              // Jika kode sudah ada di database, tampilkan pesan
+              Swal.fire(
+                'No Pelanggan sudah ada',
+                'Harap cek kembali / gunakan nama yang lain',
+                'info'
+              );
+              $('#no_pelanggan').css({
+                'border': '1px solid red'
+              });
+              $('#no_pelanggan').val('');
+              $('#no_pelanggan').focus();
+            }
+          }
+        });
+      }
+
     });
   });
 </script>

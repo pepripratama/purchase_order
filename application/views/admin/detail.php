@@ -149,7 +149,7 @@
     <footer>
       <button onclick="printContent()" target="_blank" class="btn btn-secondary btn-sm float-right"><i class="fa fa-print"></i> Print</button>
       <button onclick="exportSo('<?php echo $d->id_order; ?>')" data-toggle="modal" data-target=".exportSo" class="btn btn-info btn-sm float-right mr-3 <?= ($order->status == 1) ? 'd-none' : '' ?>"><i class="fa fa-download"></i> Export</button>
-      <button type="button" class="btn btn-warning btn-sm float-right mr-3 <?= ($order->status == 1) ? 'd-none' : '' ?>" onclick="getdetail('<?php echo $d->id_order; ?>')" data-toggle="modal" data-target=".bd-example-modal-lg"><i class="fa fa-edit "></i> Edit</button>
+      <button type="button" class="btn btn-warning btn-sm float-right mr-3 <?= ($order->status == 1) ? 'd-none' : '' ?>" onclick="getdetail('<?php echo $order->id; ?>')" data-toggle="modal" data-target=".bd-example-modal-lg"><i class="fa fa-edit "></i> Edit</button>
       <a href="<?= ($order->status == 0) ? base_url('Order') : base_url('Order/history') ?>" class="btn btn-danger  btn-sm float-right mr-3"><i class="fa fa-times-circle"></i> Close</a>
     </footer>
   </div>
@@ -216,7 +216,7 @@
           </table>
         </div>
         <div class="modal-footer">
-          <input type="hidden" name="id_order" id="id_order" />
+          <input type="hidden" name="id_order" id="id_order_update" />
           <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Close</button>
           <button type="submit" class="btn btn-success btn-sm"><i class="fa fa-save"></i> Simpan</button>
         </div>
@@ -255,7 +255,7 @@
   }
 
   function getdetail(id) {
-    $('#id_order').val(id);
+    $('#id_order_update').val(id);
     // Menggunakan Ajax untuk mengambil data artikel dari server
     $.ajax({
       url: '<?= base_url('Order/getDataPo') ?>', // Ganti dengan URL ke fungsi controller yang mengambil data artikel
