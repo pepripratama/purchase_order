@@ -1,9 +1,9 @@
 <div class="card shadow">
-    <div class="card-body">
-        <h3 class="text-info">Selamat datang, <?= $this->session->userdata('name') ?></h3>
-        <hr>
-        
-        <p>Aplikasi penilaian karyawan memudahkan Anda untuk melakukan penilaian karyawan secara efisien.</p>
+  <div class="card-body">
+    <h3 class="text-info">Selamat datang, <?= $this->session->userdata('name') ?></h3>
+    <hr>
+
+    <!-- <p>Aplikasi penilaian karyawan memudahkan Anda untuk melakukan penilaian karyawan secara efisien.</p>
         <p>Silakan gunakan menu di atas untuk mengakses fitur-fitur yang tersedia.</p>
         <hr>
         <p align="justify">Jika Anda memiliki pertanyaan atau masalah dalam menggunakan aplikasi, jangan ragu untuk menghubungi tim IT. Kami siap membantu Anda.</p>
@@ -39,6 +39,6 @@
                 <span class="count-name">Karyawan</span>
               </div>
             </div>
-          </div>
-    </div>
+          </div> -->
+  </div>
 </div>
