@@ -13,27 +13,60 @@ class Sales_order extends CI_Controller {
 
 	public function index()
 	{
-		$data['view'] = 'sales_order';
+		$data['view'] = 'sales_order_mobile';
 		$data['title'] = 'Sales Order';
 		$data['customer'] = $this->db->query("SELECT * from tb_customer order by nama_customer")->result();
 		$data['produk'] = $this->db->query("SELECT * from tb_barang order by kode_artikel")->result();
-		$this->load->view('templates/header.php',$data);
-		$this->load->view('templates/index.php',$data);
-		$this->load->view('templates/footer.php');
+		$this->load->view('mobile/header.php',$data);
+		$this->load->view('mobile/mobile.php',$data);
+		$this->load->view('mobile/footer.php');
+	}
+
+	public function list_produk()
+	{
+		$id_customer = $this->session->userdata('id_customer');
+		$tipe_customer = $this->session->userdata('tipe_customer');
+		$tipe_po = $this->session->userdata('tipe_po');
+		if (!isset($id_customer)) {
+			redirect(base_url('sales_order/customer'));
+		}
+		$data['view'] = 'sales_order_mobile';
+		$data['title'] = 'Produk';
+		if($tipe_po == 1) {
+			if ($tipe_customer == 'RETAIL') {
+          $tipe = "retail";
+        } elseif ($tipe_customer == 'GROSIR') {
+          $tipe = "grosir";
+        } elseif ($tipe_customer == 'GROSIR+10') {
+          $tipe = "grosir_10";
+        } elseif ($tipe_customer == 'HET JAWA') {
+          $tipe = "het_jawa";
+        } elseif ($tipe_customer == 'INDO BARAT') {
+          $tipe = "indo_barat";
+        }
+		} elseif($tipe_po == 2) {
+			$tipe = "special_price";
+		} elseif($tipe_po == 3) {
+			$tipe = "barang_x";
+		}
+		
+		$data['produk'] = $this->db->query("SELECT id, kode_artikel, nama_artikel, satuan, $tipe as harga from tb_barang where $tipe > 0 order by kode_artikel")->result();
+		$this->load->view('mobile/header.php',$data);
+		$this->load->view('mobile/mobile.php',$data);
+		$this->load->view('mobile/footer.php');
 	}
 
 	public function get_cart()
 	{
 
-		$cart = $this->cart->contents();
+		$cart = count($this->cart->contents());
 		echo json_encode($cart);
 	}
 
-	public function delete_cart()
+	public function delete_cart($id)
 	{
-		$id = $this->input->post('id');
 		$cart = $this->cart->remove($id);
-		echo "1";
+		redirect(base_url('keranjang'));
 	}
 
 	public function reset_cart()
@@ -52,61 +85,74 @@ class Sales_order extends CI_Controller {
 
 	public function add_cart()
 	{
-		$this->form_validation->set_rules('id_produk', 'Barang', 'required');
-		$this->form_validation->set_rules('qty', 'Qty', 'required');
-		$this->form_validation->set_rules('id_customer', 'Customer', 'required');
-
-		 if ($this->form_validation->run() == FALSE)
-		    {
-		        $data['error'] = validation_errors();
-		    }
-		    else
-		    {
-		        $id_produk = $this->input->post('id_produk');
-				$kode = $this->input->post('kode_artikel');
-				$qty = $this->input->post('qty');
-				$id_customer = $this->input->post('id_customer');
-				$data_customer = $this->db->query("SELECT margin,tipe_harga from tb_customer where id = '$id_customer'")->row();
-				$data_produk = $this->db->query("SELECT * from tb_barang where id = '$id_produk'")->row();
-				$kategori = $data_customer->tipe_harga;
-				$diskon = $data_customer->margin;
-				$satuan = $data_produk->satuan;
-				$desc = $data_produk->nama_artikel;
+    $id_produk = $this->input->post('id_produk');
+		$kode = $this->input->post('kode_artikel');
+		$tipe_po = $this->session->userdata('tipe_po');
+		$id_customer = $this->session->userdata('id_customer');
+		$data_customer = $this->db->query("SELECT * from tb_customer where id = '$id_customer'")->row();
 
 
+		if ($tipe_po=="1") {
+			$diskon =$data_customer->margin;
+		} else {
+			$diskon = "100%";
+		}
+		
 
-				if ($kategori == 'RETAIL') {
-					$harga = $data_produk->retail;
-				} elseif ($kategori == 'GROSIR') {
-					$harga = $data_produk->grosir;
-				} elseif ($kategori == 'GROSIR+10') {
-					$harga = $data_produk->grosir_10;
-				} elseif ($kategori == 'HET JAWA') {
-					$harga = $data_produk->het_jawa;
-				} elseif ($kategori == 'INDO BARAT') {
-					$harga = $data_produk->indo_barat;
-				} else {
-					$harga = 0;
-				}
+		$data = array(
+			'id' => $id_produk,
+			'qty' => 1,
+			'price' => 0,
+			'name' => $kode,
+			'diskon' => $diskon,
+		);
 
-				$harga_diskon = hitung_diskon($harga,$diskon);
-				$total = $harga_diskon * $qty;
-
-				$data = array(
-					'id' => $id_produk,
-					'qty' => $qty,
-					'price' => $harga,
-					'name' => $kode,
-					'options' => array('desc' => $desc, 'diskon' => $diskon, 'satuan' => $satuan, 'total' => $total)
-				);
-
-				$this->cart->insert($data);
-				$data['success'] = 'Item berhasil ditambahkan !';
-		    }
+		$this->cart->insert($data);
+		$data['success'] = 'Item berhasil ditambahkan !';
 
 		echo json_encode($data);
-		
+
+
 	}
 
 
+	// pilih customer
+	public function customer()
+	{
+		$data['view'] = 'form_customer';
+		$data['title'] = 'Customer';
+		$data['customer'] = $this->db->query("SELECT * from tb_customer order by nama_customer")->result();
+		$this->load->view('mobile/header.php',$data);
+		$this->load->view('mobile/mobile.php',$data);
+		$this->load->view('mobile/footer.php');
+	}
+
+	public function halaman()
+	{
+		$data['customer'] = $this->db->query("SELECT * from tb_customer order by nama_customer")->result();
+		$this->load->view('isi');
+	}
+
+	public function simpan_customer()
+	{
+        $id_customer = $this->input->post('id_customer');
+        $tipe_customer = $this->input->post('tipe_customer');
+        $nama_customer = $this->input->post('nama_customer');
+        $alamat_customer = $this->input->post('alamat_customer');
+        $tipe_po = $this->input->post('tipe_po');
+
+		$data = array(
+			'id_customer' => $id_customer,
+			'nama_customer' => $nama_customer,
+			'tipe_customer' => $tipe_customer,
+			'alamat_customer' => $alamat_customer,
+			'tipe_po' => $tipe_po,
+		);
+
+		$this->session->set_userdata($data);
+		$this->cart->destroy();
+		redirect(base_url('sales_order/list_produk'));
+
+
+	}
 }

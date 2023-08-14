@@ -201,14 +201,13 @@
 
   function addCart() {
     var qty = $("#formCart input[name='qty']").val();
-    var id_produk = $("#pilihItem").val();
-    var kode_artikel = $("#formCart input[name='kode_artikel']").val();
-    var id_customer = $("#customer").val();
+    var id_produk = $(this).data();
+    var kode_artikel = $(this).data();
     $.ajax({
         url: "<?= base_url('sales_order/add_cart') ?>",
         method: "POST",
         dataType: "json",
-        data: {qty:qty,id_produk:id_produk,kode_artikel:kode_artikel,id_customer:id_customer},
+        data: {qty:qty,id_produk:id_produk,kode_artikel:kode_artikel},
         success: function(data) {
             if (data.success)
             {

@@ -9,7 +9,7 @@ function get_periode(){
     return $query_periode;
 }
 function rupiah($angka){
-	return number_format($angka,2,",",".");
+	return number_format($angka,0,",",".");
 }
 
 function status($status){
@@ -57,6 +57,8 @@ function get_size($artikel){
 	} else {
 		$size = "-";
 	}
+
+	return $size;
 }
 
 
