@@ -9,10 +9,9 @@ function get_periode()
 
 	return $query_periode;
 }
-function rupiah($angka)
-{
-	return number_format($angka, 2, ",", ".");
-}
+function rupiah($angka){
+	return number_format($angka,0,",",".");
+
 
 function tampil_alert($type, $title, $text)
 {
@@ -89,4 +88,5 @@ function status_so($so)
 		$hasil = "-";
 	}
 	return $hasil;
+}
 }
