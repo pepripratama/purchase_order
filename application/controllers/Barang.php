@@ -43,7 +43,8 @@ class Barang extends CI_Controller
 				'grosir_10' => $artikel->grosir_10,
 				'het_jawa' => $artikel->het_jawa,
 				'indo_barat' => $artikel->indo_barat,
-				'special_price' => $artikel->special_price
+				'special_price' => $artikel->special_price,
+				'barang_x' => $artikel->barang_x,
 			);
 			echo json_encode($response);
 		} else {
@@ -56,7 +57,7 @@ class Barang extends CI_Controller
 	{
 		$id_user = $this->session->userdata('id');
 		// Format angka dari format rupiah ke angka biasa
-		$fields = array('retail', 'grosir', 'grosir_10', 'het_jawa', 'indo_barat', 'special_price');
+		$fields = array('retail', 'grosir', 'grosir_10', 'het_jawa', 'indo_barat', 'special_price', 'barang_x');
 		foreach ($fields as $field) {
 			$rupiah = $this->input->post($field);
 			$angka = str_replace(array('Rp', '.', ','), array('', '', '.'), $rupiah);
@@ -81,7 +82,7 @@ class Barang extends CI_Controller
 		$id_barang = $this->input->post('id_barang');
 
 		// Format angka dari format rupiah ke angka biasa
-		$fields = array('retail', 'grosir', 'grosir_10', 'het_jawa', 'indo_barat', 'special_price');
+		$fields = array('retail', 'grosir', 'grosir_10', 'het_jawa', 'indo_barat', 'special_price', 'barang_x');
 		foreach ($fields as $field) {
 			$rupiah = $this->input->post($field);
 			$angka = str_replace(array('Rp', '.', ','), array('', '', '.'), $rupiah);
