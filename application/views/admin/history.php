@@ -44,7 +44,7 @@
             <td><?= $d->tanggal_dibuat ?></td>
             <td><?= status_so($d->status) ?></td>
             <td>
-              <a href="<?= base_url('Order/detailHistory/' . $d->id) ?>" class="btn btn-info btn-sm"> <i class="fa fa-eye"></i> Detail</a>
+              <a href="<?= base_url('Order/detail/' . $d->id) ?>" class="btn btn-info btn-sm"> <i class="fa fa-eye"></i> Detail</a>
             </td>
           </tr>
         <?php endforeach ?>

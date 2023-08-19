@@ -132,7 +132,10 @@
             <td class="text-right"><strong>Rp. <?= number_format($grandtotal) ?></strong></td>
           </tr>
           <tr>
-            <td colspan="9" class="text-right">
+            <td colspan="5">
+              Catatan : <br> <?= nl2br(htmlspecialchars($order->catatan)) ?>
+            </td>
+            <td colspan="4" class="text-right">
               <?php
               $badge_class = $grandtotal >= $order->minimum_order ? 'success' : 'danger';
               $badge_text = $grandtotal >= $order->minimum_order ? 'SUDAH MEMENUHI MIN. PO' : 'BELUM MEMENUHI MIN. PO';
@@ -148,7 +151,8 @@
   <div class="card-footer">
     <footer>
       <button onclick="printContent()" target="_blank" class="btn btn-secondary btn-sm float-right"><i class="fa fa-print"></i> Print</button>
-      <button onclick="exportSo('<?php echo $d->id_order; ?>')" data-toggle="modal" data-target=".exportSo" class="btn btn-info btn-sm float-right mr-3 <?= ($order->status == 1) ? 'd-none' : '' ?>"><i class="fa fa-download"></i> Export</button>
+      <button onclick="exportSo('<?php echo $d->id_order; ?>')" data-toggle="modal" data-target=".exportSo" class="btn btn-info btn-sm float-right mr-3 "><i class="fa fa-download"></i> Export</button>
+      <a href="<?= base_url('assets/file/' . $order->file) ?>" target="_blank" class="btn btn-success btn-sm float-right mr-3 <?= (is_null($order->file)) ? 'd-none' : '' ?>"><i class="fa fa-download"></i> Lampiran</a>
       <button type="button" class="btn btn-warning btn-sm float-right mr-3 <?= ($order->status == 1) ? 'd-none' : '' ?>" onclick="getdetail('<?php echo $order->id; ?>','<?= $order->nama_customer ?>','<?= $order->sales ?>','<?= $order->tanggal_dibuat ?>')" data-toggle="modal" data-target=".bd-example-modal-lg"><i class="fa fa-edit "></i> Edit</button>
       <a href="<?= ($order->status == 0) ? base_url('Order') : base_url('Order/history') ?>" class="btn btn-danger  btn-sm float-right mr-3"><i class="fa fa-times-circle"></i> Close</a>
     </footer>
