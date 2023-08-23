@@ -11,6 +11,44 @@
   .btn_tambah {
     margin-bottom: 10px;
   }
+
+  .data-barang {
+    position: relative;
+    padding: 10px;
+    border: 1px solid #ccc;
+    transition: background-color 0.3s ease-in-out;
+  }
+
+  .btn_edit,
+  .btn_delete {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+    background-color: rgba(0, 0, 0, 0.3);
+    border: none;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+  }
+
+  .btn_edit {
+    right: 0;
+  }
+
+  .btn_delete {
+    right: 40px;
+  }
+
+  .data-barang:hover {
+    background-color: #f5f5f5;
+  }
+
+  .data-barang:hover .btn_edit,
+  .data-barang:hover .btn_delete {
+    opacity: 1;
+  }
 </style>
 
 <div class="card shadow">
@@ -19,12 +57,13 @@
     <button type="button" class="btn btn-success btn-sm float-right btn_tambah" data-toggle="modal" data-target="#modal_tambah">
       <i class="fas fa-plus"></i> Tambah Barang
     </button>
-    <table class="table table-striped" id="datatable">
+    <table class="table table-striped" id="datatable" style="width: 100%;">
       <thead>
         <tr>
           <th>No</th>
-          <th style="width:13%">Kode</th>
+          <th style="width:11%">Kode</th>
           <th>Barang</th>
+          <th style="width:8%">Size</th>
           <th style="width:8%">Satuan</th>
           <th style="width:8%">Retail</th>
           <th style="width:8%">Grosir</th>
@@ -32,13 +71,13 @@
           <th style="width:8%">HET_Jawa</th>
           <th style="width:8%">Indo_Barat</th>
           <th style="width:8%">SP</th>
-          <th style="width:9%">Menu</th>
+          <th style="width:8%">Brg X</th>
         </tr>
       </thead>
       <tbody>
         <?php $no = 1;
         foreach ($barang as $k) { ?>
-          <tr>
+          <tr class="data-barang">
             <td><?= $no++ ?></td>
             <td>
               <?= $k->kode_artikel ?>
@@ -50,6 +89,7 @@
               ?>
             </td>
             <td><?= $k->nama_artikel ?></td>
+            <td><?= $k->size ?></td>
             <td><?= $k->satuan ?></td>
             <td>Rp <?= number_format($k->retail) ?></td>
             <td>Rp <?= number_format($k->grosir) ?></td>
@@ -57,7 +97,7 @@
             <td>Rp <?= number_format($k->het_jawa) ?></td>
             <td>Rp <?= number_format($k->indo_barat) ?></td>
             <td>Rp <?= number_format($k->special_price) ?></td>
-            <td>
+            <td>Rp <?= number_format($k->barang_x) ?>
               <button type="button" class="btn btn-warning btn-sm btn_edit" data-toggle="modal" data-target="#exampleModalCenter" onclick="getdetail('<?php echo $k->id; ?>')">
                 <i class="fas fa-edit"></i>
               </button>
@@ -78,7 +118,7 @@
 <!-- Modal -->
 <div class="modal fade" id="modal_tambah" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" data-backdrop="static">
   <form action="<?= base_url('Barang/simpan') ?>" method="POST">
-    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
       <div class="modal-content">
         <div class="modal-header bg-success text-white">
           <h5 class="modal-title" id="exampleModalLongTitle">Tambah Barang Baru</h5>
@@ -89,15 +129,33 @@
         <div class="modal-body">
 
           <div class="row">
-            <div class="col-md-5">
+            <div class="col-md-4">
               <div class="form-group">
                 <label for="">Kode Barang :</label>
                 <input type="text" name="kode" id="kode_add" class="form-control form-control-sm" required>
               </div>
               <div class="form-group">
                 <label for="">Nama Barang :</label>
-                <textarea name="barang" class="form-control form-control-sm" required rows="5"></textarea>
+                <textarea name="barang" class="form-control form-control-sm" required rows="3"></textarea>
 
+              </div>
+              <div class="form-group">
+                <label for="">Size :</label>
+                <select name="size" class="form-control form-control-sm" required>
+                  <option value="">- Pilih Size -</option>
+                  <option value="S">S</option>
+                  <option value="M">M</option>
+                  <option value="L">L</option>
+                  <option value="XL">XL</option>
+                  <option value="XXL">XXL</option>
+                  <option value="XXXL">XXXL</option>
+                  <option value="XXXXL">XXXXL</option>
+                  <option value="S/M">S/M</option>
+                  <option value="L/XL">L/XL</option>
+                  <option value="M/L">M/L</option>
+                  <option value="XL/XXL">XL/XXL</option>
+                  <option value="ALL SIZE">ALL SIZE</option>
+                </select>
               </div>
               <div class="form-group">
                 <label for="">Satuan :</label>
@@ -109,40 +167,47 @@
                   <option value="Psg">Psg</option>
                 </select>
               </div>
+
+            </div>
+            <div class="col-md-4">
               <div class="form-group">
                 <label for="">Kategori :</label>
-                <select name="kategori" class="form-control form-control-sm" required>
+                <select name="kategori" id="kategori_add" class="form-control form-control-sm" required>
                   <option value="">- Pilih kategori -</option>
                   <option value="0">Barang Normal</option>
                   <option value="1">Barang X</option>
                 </select>
               </div>
-            </div>
-            <div class="col-md-2"></div>
-            <div class="col-md-5">
               <div class="form-group">
                 <label for="">Retail :</label>
-                <input type="text" name="retail" id="retail_add" class="form-control form-control-sm" required>
+                <input type="text" name="retail" id="retail_add" class="form-control form-control-sm" autocomplete="off">
               </div>
               <div class="form-group">
                 <label for="">Grosir :</label>
-                <input type="text" name="grosir" id="grosir_add" class="form-control form-control-sm" required>
+                <input type="text" name="grosir" id="grosir_add" class="form-control form-control-sm" autocomplete="off">
               </div>
               <div class="form-group">
                 <label for="">Grosir_10 :</label>
-                <input type="text" name="grosir_10" id="grosir_10_add" class="form-control form-control-sm" required>
+                <input type="text" name="grosir_10" id="grosir_10_add" class="form-control form-control-sm" autocomplete="off">
               </div>
+
+            </div>
+            <div class="col-md-4">
               <div class="form-group">
                 <label for="">Het Jawa :</label>
-                <input type="text" name="het_jawa" id="het_jawa_add" class="form-control form-control-sm" required>
+                <input type="text" name="het_jawa" id="het_jawa_add" class="form-control form-control-sm" autocomplete="off">
               </div>
               <div class="form-group">
                 <label for="">Indo Barat :</label>
-                <input type="text" name="indo_barat" id="indo_barat_add" class="form-control form-control-sm" required>
+                <input type="text" name="indo_barat" id="indo_barat_add" class="form-control form-control-sm" autocomplete="off">
               </div>
               <div class="form-group">
                 <label for="">Special Price :</label>
-                <input type="text" name="special_price" id="sp_add" class="form-control form-control-sm" required>
+                <input type="text" name="special_price" id="sp_add" class="form-control form-control-sm" autocomplete="off">
+              </div>
+              <div class="form-group">
+                <label for="">Barang X :</label>
+                <input type="text" name="barang_x" id="barang_x_add" class="form-control form-control-sm" autocomplete="off">
               </div>
 
             </div>
@@ -162,7 +227,7 @@
 <!-- Modal -->
 <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" data-backdrop="static">
   <form action="<?= base_url('Barang/update') ?>" method="POST">
-    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
       <div class="modal-content">
         <div class="modal-header bg-warning">
           <h5 class="modal-title" id="exampleModalLongTitle">Update Data</h5>
@@ -172,7 +237,7 @@
         </div>
         <div class="modal-body">
           <div class="row">
-            <div class="col-md-5">
+            <div class="col-md-4">
               <div class="form-group">
                 <label for="">Kode Barang :</label>
                 <input type="text" name="kode" id="kode" class="form-control form-control-sm" readonly>
@@ -180,8 +245,22 @@
               </div>
               <div class="form-group">
                 <label for="">Nama Barang :</label>
-                <textarea name="barang" id="barang" class="form-control form-control-sm" required rows="5"></textarea>
+                <textarea name="barang" id="barang" class="form-control form-control-sm" required rows="3"></textarea>
 
+              </div>
+              <div class="form-group">
+                <label for="">Size :</label>
+                <select name="size" id="size_edit" class="form-control form-control-sm" required>
+                  <option value="">- Pilih Size -</option>
+                  <option value="S">S</option>
+                  <option value="M">M</option>
+                  <option value="L">L</option>
+                  <option value="XL">XL</option>
+                  <option value="XXL">XXL</option>
+                  <option value="XXXL">XXXL</option>
+                  <option value="XXXXL">XXXXL</option>
+                  <option value="ALL SIZE">ALL SIZE</option>
+                </select>
               </div>
               <div class="form-group">
                 <label for="">Satuan :</label>
@@ -192,6 +271,8 @@
                   <option value="Psg">Psg</option>
                 </select>
               </div>
+            </div>
+            <div class="col-md-4">
               <div class="form-group">
                 <label for="">Kategori :</label>
                 <select name="kategori" id="kategori" class="form-control form-control-sm" required>
@@ -200,34 +281,36 @@
                   <option value="1">Barang X</option>
                 </select>
               </div>
-
-
-            </div>
-            <div class="col-md-2"></div>
-            <div class="col-md-5">
               <div class="form-group">
                 <label for="">Retail :</label>
-                <input type="text" name="retail" id="retail" class="form-control form-control-sm" required>
+                <input type="text" name="retail" id="retail" class="form-control form-control-sm" autocomplete="off">
               </div>
               <div class="form-group">
                 <label for="">Grosir :</label>
-                <input type="text" name="grosir" id="grosir" class="form-control form-control-sm" required>
+                <input type="text" name="grosir" id="grosir" class="form-control form-control-sm" autocomplete="off">
               </div>
               <div class="form-group">
                 <label for="">Grosir_10 :</label>
-                <input type="text" name="grosir_10" id="grosir_10" class="form-control form-control-sm" required>
+                <input type="text" name="grosir_10" id="grosir_10" class="form-control form-control-sm" autocomplete="off">
               </div>
+            </div>
+            <div class="col-md-4">
+
               <div class="form-group">
                 <label for="">Het Jawa :</label>
-                <input type="text" name="het_jawa" id="het_jawa" class="form-control form-control-sm" required>
+                <input type="text" name="het_jawa" id="het_jawa" class="form-control form-control-sm" autocomplete="off">
               </div>
               <div class="form-group">
                 <label for="">Indo Barat :</label>
-                <input type="text" name="indo_barat" id="indo_barat" class="form-control form-control-sm" required>
+                <input type="text" name="indo_barat" id="indo_barat" class="form-control form-control-sm" autocomplete="off">
               </div>
               <div class="form-group">
                 <label for="">Special Price :</label>
-                <input type="text" name="special_price" id="sp" class="form-control form-control-sm" required>
+                <input type="text" name="special_price" id="sp" class="form-control form-control-sm" autocomplete="off">
+              </div>
+              <div class="form-group">
+                <label for="">Barang X :</label>
+                <input type="text" name="barang_x" id="barang_x" class="form-control form-control-sm" autocomplete="off">
               </div>
 
             </div>
@@ -273,6 +356,7 @@
           $('#kode').val(response.kode);
           $('#barang').val(response.nama);
           $('#satuan_input').val(response.satuan);
+          $('#size_edit').val(response.size);
           $('#kategori').val(response.kategori);
           $('#retail').val(formatRupiah(response.retail));
           $('#grosir').val(formatRupiah(response.grosir));
@@ -280,6 +364,14 @@
           $('#het_jawa').val(formatRupiah(response.het_jawa));
           $('#indo_barat').val(formatRupiah(response.indo_barat));
           $('#sp').val(formatRupiah(response.special_price));
+          $('#barang_x').val(formatRupiah(response.barang_x));
+          if (response.kategori === '1') { // Membandingkan dengan string "1"
+            $("#retail,#grosir,#grosir_10,#het_jawa,#indo_barat,#sp").prop("readonly", true);
+            $("#barang_x").prop("readonly", false);
+          } else {
+            $("#retail,#grosir,#grosir_10,#het_jawa,#indo_barat,#sp").prop("readonly", false);
+            $("#barang_x").prop("readonly", true);
+          }
         }
       },
       error: function(xhr, status, error) {
@@ -289,7 +381,7 @@
   }
   $(document).ready(function() {
     // Tambahkan event listener ke input retail, grosir, grosir_10, het_jawa, indo_barat, dan sp
-    $('#retail, #grosir, #grosir_10, #het_jawa, #indo_barat, #sp, #retail_add, #grosir_add, #grosir_10_add, #het_jawa_add, #indo_barat_add, #sp_add').on('keyup', function() {
+    $('#retail, #grosir, #grosir_10, #het_jawa, #indo_barat, #sp,#barang_x, #retail_add, #grosir_add, #grosir_10_add, #het_jawa_add, #indo_barat_add, #sp_add, #barang_x_add').on('keyup', function() {
       var angka = $(this).val().replace(/[Rp.,]/g, ''); // Hilangkan karakter 'Rp', '.' dan ',' dari nilai input
       var rupiah = formatRupiah(angka); // Ubah nilai menjadi format rupiah
       $(this).val(rupiah); // Set nilai input menjadi format rupiah
@@ -349,5 +441,30 @@
         }
       });
     });
+    $("#kategori_add").on("change", function() {
+      var kategori = $(this).val();
+      if (kategori === "1") { // Membandingkan dengan string "1"
+        $("#retail_add,#grosir_add,#grosir_10_add,#het_jawa_add,#indo_barat_add,#sp_add").prop("readonly", true);
+        $("#retail_add,#grosir_add,#grosir_10_add,#het_jawa_add,#indo_barat_add,#sp_add,#barang_x_add").val('');
+        $("#barang_x_add").prop("readonly", false);
+      } else {
+        $("#retail_add,#grosir_add,#grosir_10_add,#het_jawa_add,#indo_barat_add,#sp_add").prop("readonly", false);
+        $("#retail_add,#grosir_add,#grosir_10_add,#het_jawa_add,#indo_barat_add,#sp_add,#barang_x_add").val('');
+        $("#barang_x_add").prop("readonly", true);
+      }
+    });
+    $("#kategori").on("change", function() {
+      var kategori = $(this).val();
+      if (kategori === "1") { // Membandingkan dengan string "1"
+        $("#retail,#grosir,#grosir_10,#het_jawa,#indo_barat,#sp").prop("readonly", true);
+        $("#retail,#grosir,#grosir_10,#het_jawa,#indo_barat,#sp,#barang_x").val('');
+        $("#barang_x").prop("readonly", false);
+      } else {
+        $("#retail,#grosir,#grosir_10,#het_jawa,#indo_barat,#sp").prop("readonly", false);
+        $("#retail,#grosir,#grosir_10,#het_jawa,#indo_barat,#sp,#barang_x").val('');
+        $("#barang_x").prop("readonly", true);
+      }
+    });
+
   });
 </script>

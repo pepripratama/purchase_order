@@ -103,7 +103,7 @@
               <td><?= $d->kode_artikel ?></td>
               <td><?= $d->nama_artikel ?></td>
               <td class="text-center">
-                <?= get_size($d->kode_artikel) ?>
+                <?= $d->size ?>
               </td>
               <td class="text-center"><?= $d->qty ?></td>
               <td class="text-center"><?= $d->satuan ?></td>
@@ -132,7 +132,10 @@
             <td class="text-right"><strong>Rp. <?= number_format($grandtotal) ?></strong></td>
           </tr>
           <tr>
-            <td colspan="9" class="text-right">
+            <td colspan="5">
+              Catatan : <br> <?= nl2br(htmlspecialchars($order->catatan)) ?>
+            </td>
+            <td colspan="4" class="text-right">
               <?php
               $badge_class = $grandtotal >= $order->minimum_order ? 'success' : 'danger';
               $badge_text = $grandtotal >= $order->minimum_order ? 'SUDAH MEMENUHI MIN. PO' : 'BELUM MEMENUHI MIN. PO';
@@ -148,8 +151,9 @@
   <div class="card-footer">
     <footer>
       <button onclick="printContent()" target="_blank" class="btn btn-secondary btn-sm float-right"><i class="fa fa-print"></i> Print</button>
-      <button onclick="exportSo('<?php echo $d->id_order; ?>')" data-toggle="modal" data-target=".exportSo" class="btn btn-info btn-sm float-right mr-3 <?= ($order->status == 1) ? 'd-none' : '' ?>"><i class="fa fa-download"></i> Export</button>
-      <button type="button" class="btn btn-warning btn-sm float-right mr-3 <?= ($order->status == 1) ? 'd-none' : '' ?>" onclick="getdetail('<?php echo $order->id; ?>')" data-toggle="modal" data-target=".bd-example-modal-lg"><i class="fa fa-edit "></i> Edit</button>
+      <button onclick="exportSo('<?php echo $d->id_order; ?>')" data-toggle="modal" data-target=".exportSo" class="btn btn-info btn-sm float-right mr-3 "><i class="fa fa-download"></i> Export</button>
+      <a href="<?= base_url('assets/file/' . $order->file) ?>" target="_blank" class="btn btn-success btn-sm float-right mr-3 <?= (is_null($order->file)) ? 'd-none' : '' ?>"><i class="fa fa-download"></i> Lampiran</a>
+      <button type="button" class="btn btn-warning btn-sm float-right mr-3 <?= ($order->status == 1) ? 'd-none' : '' ?>" onclick="getdetail('<?php echo $order->id; ?>','<?= $order->nama_customer ?>','<?= $order->sales ?>','<?= $order->tanggal_dibuat ?>')" data-toggle="modal" data-target=".bd-example-modal-lg"><i class="fa fa-edit "></i> Edit</button>
       <a href="<?= ($order->status == 0) ? base_url('Order') : base_url('Order/history') ?>" class="btn btn-danger  btn-sm float-right mr-3"><i class="fa fa-times-circle"></i> Close</a>
     </footer>
   </div>
@@ -199,6 +203,26 @@
           <button type="button" class="close" data-dismiss="modal" aria-label="Close" aria-hidden="true">&times;</button>
         </div>
         <div class="modal-body">
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="">Nama Customer :</label>
+                <input type="text" id="nama_customer" class="form-control form-control-sm" readonly>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="">Nama Sales :</label>
+                <input type="text" id="nama_sales" class="form-control form-control-sm" readonly>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="">Tanggal PO :</label>
+                <input type="date" name="tanggal" id="tgl_po" class="form-control form-control-sm" required>
+              </div>
+            </div>
+          </div>
           <table class="table responsive">
             <thead>
               <tr>
@@ -254,8 +278,12 @@
     $('#id_order').val(id);
   }
 
-  function getdetail(id) {
+  function getdetail(id, cust, sales) {
+
     $('#id_order_update').val(id);
+    $('#nama_customer').val(cust);
+    $('#nama_sales').val(sales);
+
     // Menggunakan Ajax untuk mengambil data artikel dari server
     $.ajax({
       url: '<?= base_url('Order/getDataPo') ?>', // Ganti dengan URL ke fungsi controller yang mengambil data artikel
@@ -284,6 +312,9 @@
               '<td class="text-right total_harga">' + formatRupiah(total_harga) + '</td>' +
               '</tr>';
             artikelList.append(row);
+            // Mengubah format tanggal menjadi "yyyy-mm-dd"
+            var formattedDate = artikel.tgl_po.substring(0, 10);
+            $('#tgl_po').val(formattedDate);
           });
           $('.qty-input').on('input', function() {
             updateTotalHarga($(this));
@@ -359,7 +390,12 @@
         'BERHASIL',
         'Data berhasil di export',
         'success'
-      );
+      ).then((result) => {
+        if (result.isConfirmed) {
+          window.location.reload();
+        }
+      });
+
     }
 
   });

@@ -23,7 +23,7 @@ class Order extends CI_Controller
 		$data['title'] = 'Sales Order';
 		$data['detail']	= $this->db->query("SELECT tor.*, tc.nama_customer, tc.tipe_harga, tu.nama as sales from tb_order tor
 		join tb_customer tc on tor.id_customer = tc.id
-		left join tb_user tu on tc.id_sales = tu.id where tor.status = 0
+		left join tb_user tu on tor.id_user = tu.id where tor.status = 0
 		")->result();
 		$this->load->view('templates/header.php', $data);
 		$this->load->view('templates/index.php', $data);
@@ -36,8 +36,8 @@ class Order extends CI_Controller
 		$data['title'] = 'Sales Order';
 		$data['order'] = $this->db->query("SELECT td.*, tc.nama_customer, tc.alamat,tc.tipe_harga, tu.nama as sales, tc.minimum_order from tb_order td
 		join tb_customer tc on td.id_customer = tc.id
-		left join tb_user tu on tc.id_sales = tu.id where td.id ='$id'")->row();
-		$data['detail']	= $this->db->query("SELECT tod.*, tb.kode_artikel,tb.nama_artikel,tb.satuan,tc.margin, td.diskon from tb_order_detail tod
+		left join tb_user tu on td.id_user = tu.id where td.id ='$id'")->row();
+		$data['detail']	= $this->db->query("SELECT tod.*, tb.kode_artikel,tb.nama_artikel,tb.satuan,tb.size,tc.margin, td.diskon from tb_order_detail tod
 		join tb_order td on tod.id_order = td.id
 		join tb_barang tb on tod.id_barang = tb.id
 		join tb_customer tc on td.id_customer = tc.id where tod.id_order = '$id' order by tb.kode_artikel asc
@@ -53,8 +53,9 @@ class Order extends CI_Controller
 
 		// Mengambil data artikel dari tabel tb_stok berdasarkan id_toko
 		// Ganti dengan kode Anda untuk mengambil data dari database
-		$artikel = $this->db->query("SELECT tpd.*, tp.kode_artikel, tp.nama_artikel,tp.satuan from tb_order_detail tpd
+		$artikel = $this->db->query("SELECT tpd.*, tp.kode_artikel, tp.nama_artikel,tp.satuan, too.tanggal_dibuat as tgl_po from tb_order_detail tpd
        join tb_barang tp on tpd.id_barang = tp.id
+	   join tb_order too on tpd.id_order = too.id
        where tpd.id_order = '$detail' order by tp.kode_artikel asc  ");
 
 		if ($artikel->num_rows() > 0) {
@@ -72,7 +73,9 @@ class Order extends CI_Controller
 		$id_detail	= $this->input->post('id_detail');
 		$id_order	= $this->input->post('id_order');
 		$qty_update	= $this->input->post('qty_update');
+		$tanggal	= $this->input->post('tanggal');
 		$jml	= count($id_detail);
+		$this->db->trans_start();
 		for ($i = 0; $i < $jml; $i++) {
 			$data = array(
 				'qty'	=> $qty_update[$i],
@@ -83,6 +86,8 @@ class Order extends CI_Controller
 			);
 			$this->db->update('tb_order_detail', $data, $where);
 		}
+		$this->db->update('tb_order', array('tanggal_dibuat' => $tanggal), array('id' => $id_order));
+		$this->db->trans_complete();
 		tampil_alert('success', 'BERHASIL', 'Data PO berhasil di update');
 		redirect(base_url('Order/detail/' . $id_order));
 	}

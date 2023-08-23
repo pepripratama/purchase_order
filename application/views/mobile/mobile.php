@@ -1,4 +1,4 @@
-<body style="height:90vh">
+<body style="height:90vh; font-size:75%">
     <div class="container mt-3">
         <?php if (empty($view)) {
             echo"<img class='d-block w-100' src='assets/img/hicoop.jpg'></img>";
@@ -28,7 +28,7 @@
                 <div class="modal-body">Apakah anda yakin ingin keluar?</div>
                 <div class="modal-footer">
                     <button class="btn btn-link" type="button" data-dismiss="modal">Batal</button>
-                    <a class="btn btn-link" href="<?= base_url('auth/logout') ?>">Iya</a>
+                    <a class="btn btn-link" href="<?= base_url('auth_mobile/logout') ?>">Iya</a>
                 </div>
             </div>
         </div>

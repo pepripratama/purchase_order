@@ -1,20 +1,19 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class Auth extends CI_Controller
+class Auth_mobile extends CI_Controller
 {
     public function __construct()
     {
         parent::__construct();
-        $this->load->library('form_validation');
     }
 
     public function index()
     {
         $data['title'] = 'Login Page';
-        $this->load->view('templates/header.php', $data);
-        $this->load->view('auth/login.php');
-        $this->load->view('templates/footer.php');
+        $this->load->view('mobile/header.php', $data);
+        $this->load->view('mobile/login.php');
+        $this->load->view('mobile/footer.php');
     }
 
     public function login()
@@ -40,20 +39,19 @@ class Auth extends CI_Controller
             if ($user->id_role == 1) {
                 redirect(base_url('Dashboard'));
             } elseif ($user->id_role == 2) {
-                redirect(base_url('Sales_order/customer'));
+                redirect(base_url('Sales_order'));
             }
             
         } else {
-            $this->session->set_flashdata('gagal', " Username / password salah. !");
-            redirect(base_url('auth'));
+            tampil_alert('error', 'Gagal !', 'Password atau Username yang anda masukkan salah');
+            redirect(base_url('Auth_mobile'));
         }
     }
     public function logout()
     {
         $this->session->sess_destroy();
-        $this->session->set_flashdata('message', '<div class="alert alert-success" 
-        role="alert"> You have been logout!</div>');
-        redirect('auth');
+        tampil_alert('success', 'Berhasil', 'Anda telah logout');
+        redirect(base_url('Auth_mobile'));
     }
     //  ganti password
     public function gantiPass()
@@ -68,6 +66,6 @@ class Auth extends CI_Controller
         );
         $this->db->update('tb_user', $data, $where);
         tampil_alert('success', 'BERHASIL', 'Password berhasil di ganti');
-        redirect(base_url(''));
+        redirect(base_url('Auth_mobile'));
     }
 }

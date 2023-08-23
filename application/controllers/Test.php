@@ -42,5 +42,29 @@ class Test extends CI_Controller {
 		$set = $this->cart->insert($data);
 	}
 
+	public function pecah_qty(){
+
+		$artikels = array('artikel_a','artikel_b','artikel_c');
+		$qty = 28;
+		$urutan = 0;
+		$artikel_a = 0;
+		$artikel_b = 0;
+		$artikel_c = 0;
+		for ($i=0; $i < $qty; $i++) { 
+			$$artikels[$urutan] += 1;
+			
+			if ($urutan == 2) {
+				$urutan = 0;
+			} else {
+				$urutan++;}
+		}
+
+		echo "Qty = $qty<br>";
+		echo "HBKL A = $artikel_a <br>";
+		echo "HBKL B = $artikel_b <br>";
+		echo "HBKL C = $artikel_c <br>";
+
+	}
+
 
 }

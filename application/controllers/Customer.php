@@ -20,9 +20,9 @@ class Customer extends CI_Controller
 		left join tb_user tu on tc.id_sales = tu.id
 		where tc.status = 1 order by tc.id desc")->result();
 		$data['sales'] = $this->db->query("SELECT * from tb_user where id_role = 2 and status = 1 order by id desc")->result();
-		$this->load->view('templates/header.php', $data);
-		$this->load->view('templates/index.php', $data);
-		$this->load->view('templates/footer.php');
+		$this->load->view('mobile/header.php', $data);
+		$this->load->view('mobile/index.php', $data);
+		$this->load->view('mobile/footer.php');
 	}
 	public function getdata()
 	{
