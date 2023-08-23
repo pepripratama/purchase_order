@@ -354,35 +354,35 @@
     });
 
     // cek no pelanggan
-    $("#no_pelanggan, #no_pelanggan_edit").on("blur", function() {
-      var kodeBarang = $(this).val();
-      if (kodeBarang != "") {
-        // Mengirimkan kode barang ke server untuk memeriksa keberadaannya di database
-        $.ajax({
-          url: "<?php echo base_url('Customer/no_pelanggan'); ?>",
-          method: "POST",
-          data: {
-            kode: kodeBarang
-          },
-          dataType: "json",
-          success: function(response) {
-            if (response.exist) {
-              // Jika kode sudah ada di database, tampilkan pesan
-              Swal.fire(
-                'No Pelanggan sudah ada',
-                'Harap cek kembali / gunakan nama yang lain',
-                'info'
-              );
-              $('#no_pelanggan').css({
-                'border': '1px solid red'
-              });
-              $('#no_pelanggan').val('');
-              $('#no_pelanggan').focus();
-            }
-          }
-        });
-      }
+    // $("#no_pelanggan, #no_pelanggan_edit").on("blur", function() {
+    //   var kodeBarang = $(this).val();
+    //   if (kodeBarang != "") {
+    //     // Mengirimkan kode barang ke server untuk memeriksa keberadaannya di database
+    //     $.ajax({
+    //       url: "<?php echo base_url('Customer/no_pelanggan'); ?>",
+    //       method: "POST",
+    //       data: {
+    //         kode: kodeBarang
+    //       },
+    //       dataType: "json",
+    //       success: function(response) {
+    //         if (response.exist) {
+    //           // Jika kode sudah ada di database, tampilkan pesan
+    //           Swal.fire(
+    //             'No Pelanggan sudah ada',
+    //             'Harap cek kembali / gunakan nama yang lain',
+    //             'info'
+    //           );
+    //           $('#no_pelanggan').css({
+    //             'border': '1px solid red'
+    //           });
+    //           $('#no_pelanggan').val('');
+    //           $('#no_pelanggan').focus();
+    //         }
+    //       }
+    //     });
+    //   }
 
-    });
+    // });
   });
 </script>
