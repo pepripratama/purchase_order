@@ -103,7 +103,7 @@
               <td><?= $d->kode_artikel ?></td>
               <td><?= $d->nama_artikel ?></td>
               <td class="text-center">
-                <?= get_size($d->kode_artikel) ?>
+                <?= $d->size ?>
               </td>
               <td class="text-center"><?= $d->qty ?></td>
               <td class="text-center"><?= $d->satuan ?></td>

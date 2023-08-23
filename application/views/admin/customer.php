@@ -19,7 +19,7 @@
     <button type="button" class="btn btn-success btn-sm float-right btn_tambah" data-toggle="modal" data-target="#modal_tambah">
       <i class="fas fa-plus"></i> Tambah Customer
     </button>
-    <table class="table table-striped" id="datatable">
+    <table class="table table-striped" id="datatable" style="width: 100%;">
       <thead>
         <tr>
           <th>#</th>

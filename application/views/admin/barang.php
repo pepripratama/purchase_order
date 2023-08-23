@@ -11,6 +11,44 @@
   .btn_tambah {
     margin-bottom: 10px;
   }
+
+  .data-barang {
+    position: relative;
+    padding: 10px;
+    border: 1px solid #ccc;
+    transition: background-color 0.3s ease-in-out;
+  }
+
+  .btn_edit,
+  .btn_delete {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+    background-color: rgba(0, 0, 0, 0.3);
+    border: none;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+  }
+
+  .btn_edit {
+    right: 0;
+  }
+
+  .btn_delete {
+    right: 40px;
+  }
+
+  .data-barang:hover {
+    background-color: #f5f5f5;
+  }
+
+  .data-barang:hover .btn_edit,
+  .data-barang:hover .btn_delete {
+    opacity: 1;
+  }
 </style>
 
 <div class="card shadow">
@@ -19,12 +57,13 @@
     <button type="button" class="btn btn-success btn-sm float-right btn_tambah" data-toggle="modal" data-target="#modal_tambah">
       <i class="fas fa-plus"></i> Tambah Barang
     </button>
-    <table class="table table-striped" id="datatable">
+    <table class="table table-striped" id="datatable" style="width: 100%;">
       <thead>
         <tr>
           <th>No</th>
           <th style="width:11%">Kode</th>
           <th>Barang</th>
+          <th style="width:8%">Size</th>
           <th style="width:8%">Satuan</th>
           <th style="width:8%">Retail</th>
           <th style="width:8%">Grosir</th>
@@ -33,13 +72,12 @@
           <th style="width:8%">Indo_Barat</th>
           <th style="width:8%">SP</th>
           <th style="width:8%">Brg X</th>
-          <th style="width:9%">Menu</th>
         </tr>
       </thead>
       <tbody>
         <?php $no = 1;
         foreach ($barang as $k) { ?>
-          <tr>
+          <tr class="data-barang">
             <td><?= $no++ ?></td>
             <td>
               <?= $k->kode_artikel ?>
@@ -51,6 +89,7 @@
               ?>
             </td>
             <td><?= $k->nama_artikel ?></td>
+            <td><?= $k->size ?></td>
             <td><?= $k->satuan ?></td>
             <td>Rp <?= number_format($k->retail) ?></td>
             <td>Rp <?= number_format($k->grosir) ?></td>
@@ -58,8 +97,7 @@
             <td>Rp <?= number_format($k->het_jawa) ?></td>
             <td>Rp <?= number_format($k->indo_barat) ?></td>
             <td>Rp <?= number_format($k->special_price) ?></td>
-            <td>Rp <?= number_format($k->barang_x) ?></td>
-            <td>
+            <td>Rp <?= number_format($k->barang_x) ?>
               <button type="button" class="btn btn-warning btn-sm btn_edit" data-toggle="modal" data-target="#exampleModalCenter" onclick="getdetail('<?php echo $k->id; ?>')">
                 <i class="fas fa-edit"></i>
               </button>
@@ -98,8 +136,26 @@
               </div>
               <div class="form-group">
                 <label for="">Nama Barang :</label>
-                <textarea name="barang" class="form-control form-control-sm" required rows="5"></textarea>
+                <textarea name="barang" class="form-control form-control-sm" required rows="3"></textarea>
 
+              </div>
+              <div class="form-group">
+                <label for="">Size :</label>
+                <select name="size" class="form-control form-control-sm" required>
+                  <option value="">- Pilih Size -</option>
+                  <option value="S">S</option>
+                  <option value="M">M</option>
+                  <option value="L">L</option>
+                  <option value="XL">XL</option>
+                  <option value="XXL">XXL</option>
+                  <option value="XXXL">XXXL</option>
+                  <option value="XXXXL">XXXXL</option>
+                  <option value="S/M">S/M</option>
+                  <option value="L/XL">L/XL</option>
+                  <option value="M/L">M/L</option>
+                  <option value="XL/XXL">XL/XXL</option>
+                  <option value="ALL SIZE">ALL SIZE</option>
+                </select>
               </div>
               <div class="form-group">
                 <label for="">Satuan :</label>
@@ -189,8 +245,22 @@
               </div>
               <div class="form-group">
                 <label for="">Nama Barang :</label>
-                <textarea name="barang" id="barang" class="form-control form-control-sm" required rows="5"></textarea>
+                <textarea name="barang" id="barang" class="form-control form-control-sm" required rows="3"></textarea>
 
+              </div>
+              <div class="form-group">
+                <label for="">Size :</label>
+                <select name="size" id="size_edit" class="form-control form-control-sm" required>
+                  <option value="">- Pilih Size -</option>
+                  <option value="S">S</option>
+                  <option value="M">M</option>
+                  <option value="L">L</option>
+                  <option value="XL">XL</option>
+                  <option value="XXL">XXL</option>
+                  <option value="XXXL">XXXL</option>
+                  <option value="XXXXL">XXXXL</option>
+                  <option value="ALL SIZE">ALL SIZE</option>
+                </select>
               </div>
               <div class="form-group">
                 <label for="">Satuan :</label>
@@ -286,6 +356,7 @@
           $('#kode').val(response.kode);
           $('#barang').val(response.nama);
           $('#satuan_input').val(response.satuan);
+          $('#size_edit').val(response.size);
           $('#kategori').val(response.kategori);
           $('#retail').val(formatRupiah(response.retail));
           $('#grosir').val(formatRupiah(response.grosir));
