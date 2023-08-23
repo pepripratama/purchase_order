@@ -11,7 +11,7 @@ function get_periode()
 }
 function rupiah($angka){
 	return number_format($angka,0,",",".");
-
+}
 
 function tampil_alert($type, $title, $text)
 {
@@ -22,7 +22,7 @@ function tampil_alert($type, $title, $text)
 		'text'  => $text
 	);
 
-	$CI->session->set_flashdata($data);
+	return $CI->session->set_flashdata($data);
 }
 
 function hitung_diskon($harga_satuan, $diskon)
@@ -88,5 +88,4 @@ function status_so($so)
 		$hasil = "-";
 	}
 	return $hasil;
-}
 }
