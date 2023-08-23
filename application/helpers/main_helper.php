@@ -9,10 +9,10 @@ function get_periode()
 
 	return $query_periode;
 }
-function rupiah($angka){
-	return number_format($angka,0,",",".");
+function rupiah($angka)
+{
+	return number_format($angka, 0, ",", ".");
 }
-
 function tampil_alert($type, $title, $text)
 {
 	$CI = &get_instance();
@@ -67,11 +67,11 @@ function get_size($artikel)
 }
 function jenis_so($so)
 {
-	if ($so == 0) {
-		$hasil = "SO PUTUS";
-	} else if ($so == 1) {
-		$hasil = "SO SPECIAL PRICE";
+	if ($so == 1) {
+		$hasil = "SO REGULER";
 	} else if ($so == 2) {
+		$hasil = "SO SPECIAL PRICE";
+	} else if ($so == 3) {
 		$hasil = "SO BARANG X";
 	} else {
 		$hasil = "-";
