@@ -43,6 +43,9 @@ class Test extends CI_Controller {
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 2d512ccae4d610b65f94b883adbe17633ec98fdb
 	public function pecah_qty(){
 
 		$artikels = array('artikel_a','artikel_b','artikel_c');
@@ -67,11 +70,14 @@ class Test extends CI_Controller {
 
 	}
 
+<<<<<<< HEAD
 	public function kodePo(){
 		echo generateKodePo();
 	}
 
 =======
 >>>>>>> 4ca2f416fc26fa308a2e3362bfe11484dedbe2f5
+=======
+>>>>>>> 2d512ccae4d610b65f94b883adbe17633ec98fdb
 
 }

@@ -4,6 +4,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Keranjang extends CI_Controller {
 	public function __construct(){
 		parent::__construct();
+		if ($this->session->userdata('login') == false) {
+			redirect(base_url('auth_mobile'));
+		}
 		$this->load->library('cart');
 	}
 
@@ -52,7 +55,7 @@ class Keranjang extends CI_Controller {
 			} elseif($tipe_po == 3) {
 				$tipe = "barang_x";
 			}
-			$data_produk = $this->db->query("SELECT id, kode_artikel, nama_artikel, satuan, $tipe as harga from tb_barang where id = '$id_barang' ")->row();
+			$data_produk = $this->db->query("SELECT id, kode_artikel, nama_artikel, satuan, $tipe as harga, size from tb_barang where id = '$id_barang' ")->row();
 			$harga = $data_produk->harga;
 			$diskon = $k['diskon'];
 			$harga_diskon = hitung_diskon($harga,$diskon);
@@ -61,6 +64,7 @@ class Keranjang extends CI_Controller {
 			$subtotal += $total_harga;
 			$nama_artikel = $data_produk->nama_artikel;
 			$satuan = $data_produk->satuan;
+			$size = $data_produk->size;
 			$data_list[] = (object) array(
 				'rowid' => $k['rowid'],
 				'id' => $id_barang,
@@ -68,6 +72,7 @@ class Keranjang extends CI_Controller {
 				'nama_artikel' => $nama_artikel,
 				'harga' => $harga,
 				'satuan' => $satuan,
+				'size' => $size,
 				'qty' => $qty,
 				'diskon' => $diskon,
 			);
@@ -79,6 +84,7 @@ class Keranjang extends CI_Controller {
 		$data['grandtotal'] = $grandtotal;
 		$data['tipe_po'] = $tipe_po;
 		$data['nama_customer'] = $nama_customer;
+		$data['diskon_faktur'] = $diskon_faktur;
 		$this->load->view('mobile/header.php',$data);
 		$this->load->view('mobile/mobile.php',$data);
 		$this->load->view('mobile/footer.php');
@@ -102,7 +108,11 @@ class Keranjang extends CI_Controller {
 		}
 		
 		$update = $this->cart->update($data);
-		redirect(base_url('keranjang'));
+
+		if ($update) {
+			$data['sukses'] = true;
+		}
+		echo json_encode($data);
 	}
 
 	public function edit_diskon_faktur(){
@@ -120,6 +130,7 @@ class Keranjang extends CI_Controller {
 
 	public function proses()
 	{
+<<<<<<< HEAD
 <<<<<<< HEAD
 		$catatan = $this->input->post('catatan');
 		$id_customer = $this->session->userdata('id_customer');
@@ -225,10 +236,114 @@ class Keranjang extends CI_Controller {
 	public function subtotal(){
 =======
 >>>>>>> 4ca2f416fc26fa308a2e3362bfe11484dedbe2f5
+=======
+		$catatan = $this->input->post('catatan');
+>>>>>>> 2d512ccae4d610b65f94b883adbe17633ec98fdb
 		$id_customer = $this->session->userdata('id_customer');
+		$id_user = $this->session->userdata('id');
 		$tipe_customer = $this->session->userdata('tipe_customer');
 		$tipe_po = $this->session->userdata('tipe_po');
+		$diskon_faktur = $this->input->post('diskon_faktur');
 		$keranjang = $this->cart->contents();
+		$filename = time();
+
+		// upload file
+		$config['upload_path']          = 'assets/file/';
+        $config['allowed_types']        = 'jpeg|jpg|png|pdf|doc|docx';
+        $config['max_size']             = 3000;
+        $config['file_name']            = $filename;
+        $config['overwite']             = true;
+
+        $this->load->library('upload', $config);
+        $this->upload->initialize($config);
+        if ($this->upload->do_upload('lampiran')) {
+        	$filename = $this->upload->data('file_name');
+        } else {
+        	$filename = null;
+        }
+        
+		
+		// cari diskon faktur
+		if (isset($diskon_faktur)) {
+			$diskon_faktur = $diskon_faktur;
+		} else {
+			$diskon_faktur = "0%";
+		}
+
+		$this->db->trans_start();
+
+		//insert ke tb_order
+		$data_order = array(
+			'id_customer' => $id_customer,
+			'id_user' => $id_user,
+			'jenis' => $tipe_po,
+			'tanggal_dibuat' => date('Y-m-d H:i:s'),
+			'diskon' => $diskon_faktur,
+			'referensi' => "-",
+			'no_faktur' => "-",
+			'catatan' => $catatan,
+			'file' => $filename,
+			'status' => 0,
+		);
+		$this->db->insert('tb_order',$data_order);
+		$id_order = $this->db->insert_id();
+
+		// insert ke tb_order_detail
+		foreach ($keranjang as $k) {
+			$id_barang = $k['id'];
+			if($tipe_po == 1) {
+				if ($tipe_customer == 'RETAIL') {
+		          $tipe = "retail";
+		        } elseif ($tipe_customer == 'GROSIR') {
+		          $tipe = "grosir";
+		        } elseif ($tipe_customer == 'GROSIR+10') {
+		          $tipe = "grosir_10";
+		        } elseif ($tipe_customer == 'HET JAWA') {
+		          $tipe = "het_jawa";
+		        } elseif ($tipe_customer == 'INDO BARAT') {
+		          $tipe = "indo_barat";
+		        }
+			} elseif($tipe_po == 2) {
+				$tipe = "special_price";
+			} elseif($tipe_po == 3) {
+				$tipe = "barang_x";
+			}
+			$data_produk = $this->db->query("SELECT id, kode_artikel, nama_artikel, satuan, $tipe as harga from tb_barang where id = '$id_barang' ")->row();
+			$harga = $data_produk->harga;
+			$diskon = $k['diskon'];
+			$qty = $k['qty'];
+			$data_order_detail = array(
+				'id_order' => $id_order,
+				'id_barang' => $k['id'],
+				'qty' => $qty,
+				'harga' => $harga,
+				'diskon_barang' => $diskon
+			);
+
+			$this->db->insert('tb_order_detail',$data_order_detail);
+		}
+
+		$data = array('id_customer','nama_customer','tipe_customer','alamat_customer','tipe_po','diskon_faktur');
+		$this->session->unset_userdata($data);
+
+		$this->db->trans_complete();
+		redirect(base_url('sales_order'));
+	}
+
+	public function subtotal(){
+		$id_customer = $this->session->userdata('id_customer');
+		$tipe_customer = $this->session->userdata('tipe_customer');
+		$nama_customer = $this->session->userdata('nama_customer');
+		$tipe_po = $this->session->userdata('tipe_po');
+		$diskon_faktur = $this->input->post('diskon_faktur');
+		if (isset($diskon_faktur)) {
+			$diskon_faktur = $diskon_faktur;
+		} else {
+			$diskon_faktur = "0%";
+		}
+		
+		$keranjang = $this->cart->contents();
+		$subtotal = 0;
 		$data_list = [];
 		foreach ($keranjang as $k) {
 			$id_barang = $k['id'];
@@ -254,18 +369,12 @@ class Keranjang extends CI_Controller {
 			$diskon = $k['diskon'];
 			$harga_diskon = hitung_diskon($harga,$diskon);
 			$qty = $k['qty'];
-			$nama_artikel = $data_produk->nama_artikel;
-			$satuan = $data_produk->satuan;
-			$data_list[] = (object) array(
-				'rowid' => $k['rowid'],
-				'id' => $id_barang,
-				'kode_artikel' => $k['name'],
-				'nama_artikel' => $nama_artikel,
-				'harga' => $harga,
-				'satuan' => $satuan,
-				'qty' => $qty,
-				'diskon' => $diskon,
-			);
+			$total_harga = $harga_diskon * $qty;
+			$subtotal += $total_harga;
 		}
+
+		$data['subtotal'] = "Rp. ".rupiah($subtotal);
+		$data['grandtotal'] = "Rp. ".rupiah(hitung_diskon($subtotal,$diskon_faktur));
+		echo json_encode($data);
 	}
 }

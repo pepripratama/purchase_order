@@ -1,7 +1,10 @@
 <div class="card" style="height:95vh; overflow:hidden;">
-  <div class="card-header">
-    <?php $this->load->view('templates/menu1') ?>
-  </div>
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="<?= base_url('Sales_order') ?>"><i class="fas fa-home"></i></a></li>
+      <li class="breadcrumb-item active" aria-current="page">Customer</li>
+    </ol>
+  </nav>
   <div class="card-body isi d-none" >
     <form action="<?= base_url('Sales_order/simpan_customer') ?>" method="POST">
         
@@ -38,10 +41,14 @@
     </div>
     <div class="card-footer d-none isi p-3">
 <<<<<<< HEAD
+<<<<<<< HEAD
       <button class="btn btn-success btn-block"><i class="fas fa-forward"></i> Lanjut</button>
 =======
       <button class="btn btn-primary btn-lg btn-block"><i class="fas fa-save"></i> Simpan</button>
 >>>>>>> 4ca2f416fc26fa308a2e3362bfe11484dedbe2f5
+=======
+      <button class="btn btn-primary btn-block"><i class="fas fa-forward"></i> Lanjut</button>
+>>>>>>> 2d512ccae4d610b65f94b883adbe17633ec98fdb
     </div>
 </div>
   </form>

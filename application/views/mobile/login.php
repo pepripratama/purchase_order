@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 <body class="bg-success">
+=======
+<body class="bg-primary">
+>>>>>>> 2d512ccae4d610b65f94b883adbe17633ec98fdb
 <?php
 if ($this->session->flashdata('type')) { ?>
     <script>
@@ -16,10 +20,14 @@ if ($this->session->flashdata('type')) { ?>
     <div class="col-lg-6">
         <div class="card shadow">
             
+<<<<<<< HEAD
             <div class="text-center card-header">
                 <img class="w-25" src="<?= base_url('assets/icon/logo-pom.png') ?>">
                 <h5>Purchase Order Mobile</h5>
             </div>
+=======
+            <h3 class="text-center card-header">LOGIN</h3>
+>>>>>>> 2d512ccae4d610b65f94b883adbe17633ec98fdb
             <div class="card-body">
                 <form action="<?= base_url('auth_mobile/login') ?>" method="POST">
                     <div class="form-group">
@@ -31,7 +39,11 @@ if ($this->session->flashdata('type')) { ?>
                         <input type="password" autocomplete="false" name="password" class="form-control">
                     </div>
                     <div class="form-group">
+<<<<<<< HEAD
                         <input type="submit" class="btn btn-block btn-success" value="LOGIN">
+=======
+                        <input type="submit" class="btn btn-block btn-primary" value="LOGIN">
+>>>>>>> 2d512ccae4d610b65f94b883adbe17633ec98fdb
                     </div>
                 </form>
             </div>

@@ -5,6 +5,7 @@
       <li class="breadcrumb-item active" aria-current="page">History</li>
     </ol>
   </nav>
+<<<<<<< HEAD
   <div class="container isi d-none">
     <label for="">Pilih Tanggal</label>
     <form type="get" action="<?= base_url('Sales_order/history') ?>">
@@ -12,6 +13,15 @@
     </form>
     <hr>
     <div id="catalog" style="height: 100%; overflow: scroll">
+=======
+  <div class="card-body isi d-none">
+    <form>
+      <div class="form-group">
+        <input type="text" id="searchInput" class="form-control" placeholder="Cari kode...">
+      </div>
+    </form>
+    <div id="catalog" style="height: 75vh; overflow: scroll">
+>>>>>>> 2d512ccae4d610b65f94b883adbe17633ec98fdb
       <?php $no = 1; foreach ($data_history as $p) { ?>
         <div class="card mb-3 item">
           <div class="card-body">
@@ -34,6 +44,7 @@
               $tipe_po_text = "Barang X";
             } ?>
             <p> <?= $tipe_po_text ?></p>
+<<<<<<< HEAD
 
             <?php
             $status = $p->status;
@@ -44,6 +55,8 @@
             }
             ?>
 
+=======
+>>>>>>> 2d512ccae4d610b65f94b883adbe17633ec98fdb
             <div class="text-right">
                 <button class="btn btn-sm btn-link btnDetail" type="button" data-toggle="modal" data-target="#modalDetail" data-id="<?= $p->id ?>"><i class="fas fa-eye"></i> Lihat Detail</button>
             </div>
@@ -74,18 +87,45 @@
 </div>
 
  <script>
+<<<<<<< HEAD
 
     $(".btnDetail").click(function(){
       $("#isi_detail").html("");
+=======
+    function searchCatalog() {
+        let filter, catalog, items, title;
+        filter = $('#searchInput').val().toUpperCase();
+        catalog = document.getElementById('catalog');
+        items = catalog.getElementsByClassName('customer');
+
+        for (let i = 0; i < items.length; i++) {
+            title = items[i].textContent || items[i].innerText;
+            if (title.toUpperCase().indexOf(filter) > -1) {
+                items[i].closest(".item").style.display = '';
+            } else {
+                items[i].closest(".item").style.display = 'none';
+            }
+        }
+    }
+
+    $("#searchInput").keyup(function(){
+      searchCatalog();
+    });
+
+    $(".btnDetail").click(function(){
+>>>>>>> 2d512ccae4d610b65f94b883adbe17633ec98fdb
       var id = $(this).data('id');
       var url = "<?= base_url('Sales_order/history_detail/') ?>"+id;
       $("#isi_detail").load(url);
     });
 
+<<<<<<< HEAD
     $('#modalDetail').on('hidden.bs.modal', function (e) {
       $("#isi_detail").html("");
     })
 
+=======
+>>>>>>> 2d512ccae4d610b65f94b883adbe17633ec98fdb
 
 </script>
 

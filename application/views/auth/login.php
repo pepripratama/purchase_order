@@ -1,17 +1,17 @@
 <body class="bg-primary">
-    <?php
-    if ($this->session->flashdata('type')) { ?>
-        <script>
-            var type = "<?= $this->session->flashdata('type'); ?>"
-            var title = "<?= $this->session->flashdata('title'); ?>"
-            var text = "<?= $this->session->flashdata('text'); ?>"
-            Swal.fire(title, text, type)
-        </script>
-    <?php } ?>
-    <div class="container">
+<?php
+if ($this->session->flashdata('type')) { ?>
+    <script>
+        var type = "<?= $this->session->flashdata('type'); ?>"
+        var title = "<?= $this->session->flashdata('title'); ?>"
+        var text = "<?= $this->session->flashdata('text'); ?>"
+        Swal.fire(title, text, type)
+    </script>
+<?php } ?>
+<div class="container mt-3">
 
-        <!-- Outer Row -->
-        <div class="row justify-content-center">
+<!-- Outer Row -->
+<div class="row justify-content-center">
 
     <div class="col-lg-6">
         <?php if ($this->session->flashdata('gagal')) { ?>
@@ -22,7 +22,7 @@
             </button>
         </div>
         <?php } ?>
-        <div class="card shadow mt-3">
+        <div class="card shadow">
             
             <h3 class="text-center card-header">LOGIN</h3>
             <div class="card-body">
@@ -47,3 +47,5 @@
         </div>
 
     </div>
+</div>
+</div>

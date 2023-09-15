@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 <div style="font-size:75%">
+=======
+>>>>>>> 2d512ccae4d610b65f94b883adbe17633ec98fdb
 <?php
 if ($tipe_po == 1) {
   $tipe_po_text = "Reguler";
@@ -9,6 +12,7 @@ if ($tipe_po == 1) {
 }
 ?>
 <div class="row mb-3">
+<<<<<<< HEAD
 	<div class="col-3">Nama Customer</div>
 	<div class="col-1">:</b></div>
 	<div class="col"><b><?= $nama_customer ?></b></div>
@@ -48,6 +52,30 @@ if ($status == 0) {
 	<div class="col-3">Catatan</div>
 	<div class="col-1">:</b></div>
 	<div class="col"><b><?= $catatan ?></b></div>
+=======
+	<div class="col-4">Nama Customer</div>
+	<div class="col">: <b><?= $nama_customer ?></b></div>
+</div>
+<div class="row mb-3">
+	<div class="col-4">Tanggal PO</div>
+	<div class="col">: <b><?= $tanggal_po ?></b></div>
+</div>
+<div class="row mb-3">
+	<div class="col-4">Tipe PO</div>
+	<div class="col">: <b><?= $tipe_po_text ?></b></div>
+</div>
+<div class="row mb-3">
+	<div class="col-4">No. Faktur</div>
+	<div class="col">: <b><?= $no_faktur ?></b></div>
+</div>
+<div class="row mb-3">
+	<div class="col-4">Referensi</div>
+	<div class="col">: <b><?= $referensi ?></b></div>
+</div>
+<div class="row mb-3">
+	<div class="col-4">Catatan</div>
+	<div class="col">: <b><?= $catatan ?></b></div>
+>>>>>>> 2d512ccae4d610b65f94b883adbe17633ec98fdb
 </div>
 <table class="table">
 	<?php
@@ -82,5 +110,9 @@ if ($status == 0) {
 		<th class="text-right">Rp. <?= rupiah(hitung_diskon($subtotal,$diskon_faktur)) ?></th>
 	</tr>
 	
+<<<<<<< HEAD
 </table>
 </div>
+=======
+</table>
+>>>>>>> 2d512ccae4d610b65f94b883adbe17633ec98fdb

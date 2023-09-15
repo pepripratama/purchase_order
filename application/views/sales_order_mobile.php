@@ -1,7 +1,11 @@
 <div class="card" style="height:95vh; overflow:hidden;">
-  <div class="card-header">
-    <?php $this->load->view('templates/menu1') ?>
-  </div>
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="<?= base_url('Sales_order') ?>"><i class="fas fa-home"></i></a></li>
+      <li class="breadcrumb-item"><a href="<?= base_url('Sales_order/customer') ?>">Customer</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Produk</li>
+    </ol>
+  </nav>
 
   <div class="card-body isi d-none">
     <form>
@@ -16,12 +20,12 @@
           <div class="card-body">
             <p><b><i class="fas fa-tag"></i> <?= $p->kode_artikel ?></b></p>
             <p><?= $p->nama_artikel ?></p>
-            <p>Size <?= get_size($p->kode_artikel) ?></p>
+            <p>Size <?= $p->size ?></p>
             <p>Rp. <?= rupiah($p->harga) ?> / <?= $p->satuan ?></p>
             <!-- <div class="form-group">
               <input type="number" class="form-control" name="" value="0">
             </div> -->
-            <button type="button" class="btn btn-success btn-block btnAddCart" data-id_produk="<?= $p->id ?>" data-kode_artikel="<?= $p->kode_artikel ?>"><i class="fas fa-plus"></i> Tambah</button>
+            <p class="text-right"><button type="button" class="btn btn-link btn-sm btnAddCart" data-id_produk="<?= $p->id ?>" data-kode_artikel="<?= $p->kode_artikel ?>"><i class="fas fa-plus"></i> Tambah</button></p>
           </div>
         </div>
       <?php } ?>
@@ -29,10 +33,14 @@
   </div>
   <div class="card-footer isi d-none p-3">
 <<<<<<< HEAD
+<<<<<<< HEAD
     <button class="btn btn-success btn-block" id="btnCheckout" type="button" onclick="window.location='<?= base_url('keranjang') ?>'"><i class="fas fa-forward"></i> Lanjut (<span id="jumlahCart"></span>)</button>
 =======
     <a class="btn btn-primary btn-lg btn-block" id="btnCheckout" href="<?= base_url('keranjang') ?>"><i class="fas fa-shopping-cart"></i> Checkout (<span class="" id="jumlahCart"></span>)</a>
 >>>>>>> 4ca2f416fc26fa308a2e3362bfe11484dedbe2f5
+=======
+    <button class="btn btn-primary btn-block" id="btnCheckout" type="button" onclick="window.location='<?= base_url('keranjang') ?>'"><i class="fas fa-forward"></i> Lanjut (<span id="jumlahCart"></span>)</button>
+>>>>>>> 2d512ccae4d610b65f94b883adbe17633ec98fdb
   </div>
 </div>
 
@@ -96,9 +104,9 @@
           dataType: "json",
           success: function(data) {
             if (data == 0) {
-              $('#btnCheckout').addClass('disabled',true);
+              $('#btnCheckout').attr('disabled',true);
             } else {
-              $('#btnCheckout').removeClass('disabled');
+              $('#btnCheckout').removeAttr('disabled');
             }
 
             $("#jumlahCart").text(data);
