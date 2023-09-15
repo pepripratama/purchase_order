@@ -23,7 +23,8 @@
     <script src="https://cdn.datatables.net/buttons/2.0.1/js/dataTables.buttons.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/2.0.1/js/buttons.html5.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/2.0.1/js/buttons.print.min.js"></script>
-
+    <!-- Select2 -->
+    <script src="<?php echo base_url() ?>/assets/plugins/select2/js/select2.full.min.js"></script>
     </body>
 
     </html>

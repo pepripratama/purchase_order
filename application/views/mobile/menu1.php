@@ -1,4 +1,4 @@
-<!-- <ul class="nav nav-fill nav-pills">
+<ul class="nav nav-fill nav-pills">
   <li class="nav-item">
     <a class="nav-link <?= ($title == 'Customer') ? 'active' : '' ; ?>" href="<?= base_url('Sales_order/customer') ?>"><i class="fas fa-store"></i></a>
   </li>
@@ -7,9 +7,6 @@
   </li>
   <li class="nav-item">
     <a class="nav-link <?= ($title == 'Keranjang') ? 'active' : '' ; ?>" href="<?= base_url('Keranjang') ?>"><i class="fas fa-shopping-cart"></i></a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link <?= ($title == 'History') ? 'active' : '' ; ?>" href="<?= base_url('Sales_order/history') ?>"><i class="fas fa-history"></i></a>
   </li>
   
   <li class="nav-item dropdown ml-5">
@@ -23,12 +20,4 @@
       <a class="dropdown-item" href="#" class="dropdown-item" data-toggle="modal" data-target="#logoutModal">Logout</a>
     </div>
   </li>
-</ul> -->
-
-<nav aria-label="breadcrumb">
-  <ol class="breadcrumb">
-    <!-- <li class="breadcrumb-item"><a href="#">Customer</a></li>
-    <li class="breadcrumb-item"><a href="#">Library</a></li> -->
-    <li class="breadcrumb-item active" aria-current="page">Customer</li>
-  </ol>
-</nav>
+</ul>

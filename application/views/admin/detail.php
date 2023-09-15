@@ -107,13 +107,15 @@
               </td>
               <td class="text-center"><?= $d->qty ?></td>
               <td class="text-center"><?= $d->satuan ?></td>
-              <td class="text-right">Rp <?= number_format($d->harga) ?></td>
+              <td class="text-right">Rp <?= rupiah($d->harga) ?></td>
               <td class="text-center"><?= $d->diskon_barang ?></td>
-              <td class="text-right">Rp <?= number_format(hitung_diskon($d->harga, $d->diskon_barang) * $d->qty) ?></td>
+              <td class="text-right">Rp <?= rupiah(hitung_diskon($d->harga, $d->diskon_barang) * $d->qty) ?></td>
             </tr>
           <?php
+            $diskonPercentage = $order->diskon; // Example: "10%"
+            $diskonValue = (float) str_replace('%', '', $diskonPercentage);
             $subtotal += hitung_diskon($d->harga, $d->margin) * $d->qty;
-            $diskon_p = $subtotal * $order->diskon / 100;
+            $diskon_p = $subtotal * $diskonValue / 100;
             $grandtotal = $subtotal - $diskon_p;
           endforeach ?>
           <tr>
@@ -123,8 +125,8 @@
           </tr>
           <tr>
             <td colspan="7" class="text-right"><strong>Diskon :</strong></td>
-            <td class="text-center"><?= $order->diskon ?>%</td>
-            <td class="text-right">Rp. <?= number_format($subtotal * $order->diskon / 100) ?></td>
+            <td class="text-center"><?= $order->diskon ?></td>
+            <td class="text-right">Rp. <?= number_format($subtotal * $diskonValue / 100) ?></td>
           </tr>
           <tr>
             <td colspan="7" class="text-right"><strong>GrandTotal :</strong></td>
@@ -153,7 +155,7 @@
       <button onclick="printContent()" target="_blank" class="btn btn-secondary btn-sm float-right"><i class="fa fa-print"></i> Print</button>
       <button onclick="exportSo('<?php echo $d->id_order; ?>')" data-toggle="modal" data-target=".exportSo" class="btn btn-info btn-sm float-right mr-3 "><i class="fa fa-download"></i> Export</button>
       <a href="<?= base_url('assets/file/' . $order->file) ?>" target="_blank" class="btn btn-success btn-sm float-right mr-3 <?= (is_null($order->file)) ? 'd-none' : '' ?>"><i class="fa fa-download"></i> Lampiran</a>
-      <button type="button" class="btn btn-warning btn-sm float-right mr-3 <?= ($order->status == 1) ? 'd-none' : '' ?>" onclick="getdetail('<?php echo $order->id; ?>','<?= $order->nama_customer ?>','<?= $order->sales ?>','<?= $order->tanggal_dibuat ?>')" data-toggle="modal" data-target=".bd-example-modal-lg"><i class="fa fa-edit "></i> Edit</button>
+      <a href="<?= base_url('Order/edit/' . $order->id) ?>" class="btn btn-warning btn-sm float-right mr-3 <?= ($order->status == 1) ? 'd-none' : '' ?>"><i class="fa fa-edit "></i> Edit</a>
       <a href="<?= ($order->status == 0) ? base_url('Order') : base_url('Order/history') ?>" class="btn btn-danger  btn-sm float-right mr-3"><i class="fa fa-times-circle"></i> Close</a>
     </footer>
   </div>
@@ -171,7 +173,17 @@
           <label for="">No. Faktur :</label>
           <div class="input-group">
             <div class="input-group-prepend">
-              <span class="input-group-text" id="basic-addon1">SO-<?= date('Y-m') ?>-</span>
+              <?php
+              date_default_timezone_set('Asia/Jakarta');
+              $tanggalHariIni = new DateTime();
+              if ($tanggalHariIni->format('d') == $tanggalHariIni->format('t')) {
+                $tanggalHariIni->add(new DateInterval('P1M'));
+              }
+              $tahunBulan = $tanggalHariIni->format('Y-m');
+              // Format nomor urutan dengan tahun dan bulan
+              $nomorUrutan = "SO-$tahunBulan";
+              ?>
+              <span class="input-group-text" id="basic-addon1"><?= $nomorUrutan ?>-</span>
             </div>
             <input type="text" name="no_urut" id="no_urut" class="form-control" value="0000" maxlength="4" minlength="4" required>
           </div>
@@ -204,19 +216,25 @@
         </div>
         <div class="modal-body">
           <div class="row">
-            <div class="col-md-4">
+            <div class="col-md-3">
               <div class="form-group">
                 <label for="">Nama Customer :</label>
-                <input type="text" id="nama_customer" class="form-control form-control-sm" readonly>
+                <textarea id="nama_customer" class="form-control form-control-sm" readonly></textarea>
               </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
               <div class="form-group">
                 <label for="">Nama Sales :</label>
                 <input type="text" id="nama_sales" class="form-control form-control-sm" readonly>
               </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
+              <div class="form-group">
+                <label for="">No. PO :</label>
+                <input type="text" name="no_po" id="no_po" class="form-control form-control-sm">
+              </div>
+            </div>
+            <div class="col-md-3">
               <div class="form-group">
                 <label for="">Tanggal PO :</label>
                 <input type="date" name="tanggal" id="tgl_po" class="form-control form-control-sm" required>
@@ -241,13 +259,31 @@
         </div>
         <div class="modal-footer">
           <input type="hidden" name="id_order" id="id_order_update" />
-          <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Close</button>
-          <button type="submit" class="btn btn-success btn-sm"><i class="fa fa-save"></i> Simpan</button>
+
+          <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal"><i class="fa fa-times"></i> Close</button>
+          <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#modalTambahArtikel">
+            <i class="fa fa-plus"></i> Tambah Artikel
+          </button>
+
+          <button type="submit" class="btn btn-primary btn-sm"><i class="fa fa-save"></i> Simpan</button>
         </div>
       </div>
     </form>
   </div>
 </div>
+<div class="modal fade" id="modalTambahArtikel" tabindex="-1" role="dialog" aria-labelledby="modalTambahArtikelLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-header bg-success">
+      <h5 class="modal-title" id="exampleModalLabel">Tambah artikel</h5>
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close" aria-hidden="true">&times;</button>
+    </div>
+    <div class="modal-body">
+      time_sleep_until
+    </div>
+    <div class="modal-footer"></div>
+  </div>
+</div>
+
 <script>
   // Fungsi untuk mengarahkan ke halaman sebelumnya
   function goBack() {
@@ -276,99 +312,6 @@
 <script>
   function exportSo(id) {
     $('#id_order').val(id);
-  }
-
-  function getdetail(id, cust, sales) {
-
-    $('#id_order_update').val(id);
-    $('#nama_customer').val(cust);
-    $('#nama_sales').val(sales);
-
-    // Menggunakan Ajax untuk mengambil data artikel dari server
-    $.ajax({
-      url: '<?= base_url('Order/getDataPo') ?>', // Ganti dengan URL ke fungsi controller yang mengambil data artikel
-      type: 'GET',
-      data: {
-        detail: id
-      },
-      success: function(response) {
-        // Menampilkan data artikel ke dalam modal
-        var artikelList = $('#artikelList');
-        artikelList.empty(); // Menghapus konten sebelumnya (jika ada)
-
-        // Mengisi tabel dengan data artikel
-        if (response.length > 0) {
-          $.each(response, function(index, artikel) {
-            var diskon = artikel.diskon_barang;
-            var total_harga = diskonDetail(artikel.harga, diskon) * artikel.qty;
-            var row = '<tr>' +
-              '<td> <input type="hidden" name="id_detail[]" value=' + artikel.id + ' />' + (index + 1) + '</td>' +
-              '<td>' + artikel.kode_artikel + '</td>' +
-              '<td>' + artikel.nama_artikel + '</td>' +
-              '<td><input type="number" name="qty_update[]" min="0" class="form-control form-control-sm qty-input" value=' + artikel.qty + ' required /></td>' +
-              '<td>' + artikel.satuan + '</td>' +
-              '<td class="text-right"> <input type="hidden" class="harga" value=' + artikel.harga + ' />' + formatRupiah(artikel.harga) + '</td>' +
-              '<td class="text-center "> <input type="hidden" class="diskonHarga" value=' + artikel.diskon_barang + ' />' + artikel.diskon_barang + '</td>' +
-              '<td class="text-right total_harga">' + formatRupiah(total_harga) + '</td>' +
-              '</tr>';
-            artikelList.append(row);
-            // Mengubah format tanggal menjadi "yyyy-mm-dd"
-            var formattedDate = artikel.tgl_po.substring(0, 10);
-            $('#tgl_po').val(formattedDate);
-          });
-          $('.qty-input').on('input', function() {
-            updateTotalHarga($(this));
-          });
-        } else {
-          var emptyRow = '<tr><td colspan="5">Tidak ada artikel yang ditemukan.</td></tr>';
-          artikelList.append(emptyRow);
-        }
-      },
-      error: function(xhr, status, error) {
-        console.log(error);
-      }
-    });
-  }
-
-  function updateTotalHarga(inputElement) {
-    var row = inputElement.closest('tr');
-    var hargaCell = row.find('.harga');
-    var diskonCell = row.find('.diskonHarga');
-    var totalHargaCell = row.find('.total_harga');
-    var harga = hargaCell.val(); // Mengambil angka dari teks
-    var diskonKedua = diskonCell.val();
-    var qty = parseInt(inputElement.val());
-    var diskonAmount = diskonDetail(harga, diskonKedua);
-    var totalHarga = diskonAmount * qty;
-    totalHargaCell.text(formatRupiah(totalHarga));
-  }
-
-  // Fungsi untuk mengubah angka menjadi format rupiah
-  function formatRupiah(angka) {
-    var numberString = angka.toString();
-    var split = numberString.split('.');
-
-    var rupiah = split[0].replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-
-    var desimal = split[1] != undefined ? parseFloat('0.' + split[1]).toString().substring(2) : '';
-
-    return 'Rp ' + rupiah + (desimal !== '' ? ',' + (desimal === '00' ? '' : desimal) : '');
-  }
-
-  // fungsi helper
-  function diskonDetail(harga_satuan, diskon) {
-    var diskon_parts = diskon.split('+'); // Membagi diskon menjadi bagian-bagian
-    var harga_diskon = harga_satuan;
-
-    for (var i = 0; i < diskon_parts.length; i++) {
-      var diskon_decimal = parseFloat(diskon_parts[i].replace('%', '')); // Menghilangkan tanda persen (%)
-      harga_diskon -= harga_diskon * (diskon_decimal / 100);
-    }
-
-    // Membulatkan hasil diskon menjadi 2 angka di belakang koma
-    var hasil_bulat = harga_diskon.toFixed(2);
-
-    return parseFloat(hasil_bulat); // Mengembalikan nilai float setelah membulatkan
   }
 </script>
 <script>

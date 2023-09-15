@@ -37,12 +37,7 @@ class Auth extends CI_Controller
                 'login' => true,
             ];
             $this->session->set_userdata($data);
-            if ($user->id_role == 1) {
-                redirect(base_url('Dashboard'));
-            } elseif ($user->id_role == 2) {
-                redirect(base_url('Sales_order/customer'));
-            }
-            
+            redirect(base_url('Dashboard'));
         } else {
             $this->session->set_flashdata('gagal', " Username / password salah. !");
             redirect(base_url('auth'));

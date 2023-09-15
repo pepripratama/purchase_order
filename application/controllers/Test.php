@@ -42,6 +42,7 @@ class Test extends CI_Controller {
 		$set = $this->cart->insert($data);
 	}
 
+<<<<<<< HEAD
 	public function pecah_qty(){
 
 		$artikels = array('artikel_a','artikel_b','artikel_c');
@@ -70,5 +71,7 @@ class Test extends CI_Controller {
 		echo generateKodePo();
 	}
 
+=======
+>>>>>>> 4ca2f416fc26fa308a2e3362bfe11484dedbe2f5
 
 }
