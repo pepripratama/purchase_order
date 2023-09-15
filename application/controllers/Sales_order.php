@@ -6,17 +6,15 @@ class Sales_order extends CI_Controller {
 		parent::__construct();
 		$this->load->library('cart');
 
-		// if ($this->session->userdata('login') == false) {
-		// 	redirect(base_url('auth'));
-		// }
+		if ($this->session->userdata('login') == false) {
+			redirect(base_url('auth_mobile'));
+		}
 	}
 
 	public function index()
 	{
-		$data['view'] = 'sales_order_mobile';
-		$data['title'] = 'Sales Order';
-		$data['customer'] = $this->db->query("SELECT * from tb_customer order by nama_customer")->result();
-		$data['produk'] = $this->db->query("SELECT * from tb_barang order by kode_artikel")->result();
+		$data['view'] = 'home';
+		$data['title'] = 'Home';
 		$this->load->view('mobile/header.php',$data);
 		$this->load->view('mobile/mobile.php',$data);
 		$this->load->view('mobile/footer.php');
@@ -50,7 +48,7 @@ class Sales_order extends CI_Controller {
 			$tipe = "barang_x";
 		}
 		
-		$data['produk'] = $this->db->query("SELECT id, kode_artikel, nama_artikel, satuan, $tipe as harga from tb_barang where $tipe > 0 order by kode_artikel")->result();
+		$data['produk'] = $this->db->query("SELECT id, kode_artikel, nama_artikel, satuan, $tipe as harga, size from tb_barang where $tipe > 0 order by kode_artikel")->result();
 		$this->load->view('mobile/header.php',$data);
 		$this->load->view('mobile/mobile.php',$data);
 		$this->load->view('mobile/footer.php');
@@ -66,7 +64,10 @@ class Sales_order extends CI_Controller {
 	public function delete_cart($id)
 	{
 		$cart = $this->cart->remove($id);
-		redirect(base_url('keranjang'));
+		if ($cart) {
+			$data['sukses'] = true;
+		}
+		echo json_encode($data);
 	}
 
 	public function reset_cart()
@@ -95,7 +96,7 @@ class Sales_order extends CI_Controller {
 		if ($tipe_po=="1") {
 			$diskon =$data_customer->margin;
 		} else {
-			$diskon = "100%";
+			$diskon = "0%";
 		}
 		
 
@@ -151,8 +152,33 @@ class Sales_order extends CI_Controller {
 
 		$this->session->set_userdata($data);
 		$this->cart->destroy();
+		tampil_alert('success', 'Berhasil', 'Anda telah logout');
 		redirect(base_url('sales_order/list_produk'));
+	}
 
+	public function history(){
+		$data_history = $this->db->query("SELECT tb_order.id, tb_customer.nama_customer, tb_order.tanggal_dibuat, tb_order.jenis from tb_order join tb_customer on tb_customer.id = tb_order.id_customer order by tb_order.tanggal_dibuat desc ")->result();
+		$data['data_history'] = $data_history;
+		$data['view'] = 'history';
+		$data['title'] = 'History';
+		$this->load->view('mobile/header.php',$data);
+		$this->load->view('mobile/mobile.php',$data);
+		$this->load->view('mobile/footer.php');
+	}
 
+	public function history_detail($id){
+		$data_order = $this->db->query("SELECT tb_customer.nama_customer,tb_order.tanggal_dibuat,tb_order.jenis,tb_order.no_faktur,tb_order.referensi, tb_order.diskon, tb_order.catatan from tb_order join tb_customer on tb_order.id_customer = tb_customer.id where tb_order.id = '$id' order by tb_order.tanggal_dibuat")->row();
+
+		$data_order_detail = $this->db->query("SELECT tb_barang.kode_artikel, tb_barang.satuan, tb_order_detail.qty, tb_order_detail.harga, tb_order_detail.diskon_barang from tb_order join tb_order_detail on tb_order_detail.id_order = tb_order.id join tb_barang on tb_barang.id = tb_order_detail.id_barang where tb_order.id = '$id' order by tb_order.tanggal_dibuat")->result();
+
+		$data['nama_customer'] = $data_order->nama_customer;
+		$data['diskon_faktur'] = $data_order->diskon;
+		$data['tanggal_po'] = $data_order->tanggal_dibuat;
+		$data['tipe_po'] = $data_order->jenis;
+		$data['no_faktur'] = $data_order->no_faktur;
+		$data['referensi'] = $data_order->referensi;
+		$data['catatan'] = $data_order->catatan;
+		$data['data_history_detail'] = $data_order_detail;
+		$this->load->view('mobile/history_detail.php',$data);
 	}
 }

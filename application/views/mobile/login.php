@@ -5,7 +5,7 @@ if ($this->session->flashdata('type')) { ?>
         var type = "<?= $this->session->flashdata('type'); ?>"
         var title = "<?= $this->session->flashdata('title'); ?>"
         var text = "<?= $this->session->flashdata('text'); ?>"
-        Swal.fire(title, text, type)
+        Swal.fire(title, text, type);
     </script>
 <?php } ?>
 <div class="container mt-3">
@@ -14,19 +14,11 @@ if ($this->session->flashdata('type')) { ?>
 <div class="row justify-content-center">
 
     <div class="col-lg-6">
-        <?php if ($this->session->flashdata('gagal')) { ?>
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            <strong>Login Gagal !</strong><br><?= $this->session->flashdata('gagal') ?>
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-        <?php } ?>
         <div class="card shadow">
             
             <h3 class="text-center card-header">LOGIN</h3>
             <div class="card-body">
-                <form action="<?= base_url('auth/login') ?>" method="POST">
+                <form action="<?= base_url('auth_mobile/login') ?>" method="POST">
                     <div class="form-group">
                         <label><i class="fa fa-user"></i> USERNAME</label>
                         <input type="username" autocomplete="false" name="username" class="form-control">
@@ -41,7 +33,7 @@ if ($this->session->flashdata('type')) { ?>
                 </form>
             </div>
             <div class="card-footer text-center">
-                <small>2023 - IT Internal Globalindo Group.</small>
+                <small>2023 - IT Internal Globalindo Group</small>
             </div>
 
         </div>

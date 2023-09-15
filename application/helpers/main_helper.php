@@ -22,7 +22,7 @@ function tampil_alert($type, $title, $text)
 		'text'  => $text
 	);
 
-	$CI->session->set_flashdata($data);
+	return $CI->session->set_flashdata($data);
 }
 
 function hitung_diskon($harga_satuan, $diskon)
