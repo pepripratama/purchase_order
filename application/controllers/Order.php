@@ -23,11 +23,104 @@ class Order extends CI_Controller
 		$data['title'] = 'Sales Order';
 		$data['detail']	= $this->db->query("SELECT tor.*, tc.nama_customer, tc.tipe_harga, tu.nama as sales from tb_order tor
 		join tb_customer tc on tor.id_customer = tc.id
-		left join tb_user tu on tor.id_user = tu.id where tor.status = 0
+		left join tb_user tu on tor.id_user = tu.id where tor.status = 0 order by tor.id desc
 		")->result();
 		$this->load->view('templates/header.php', $data);
 		$this->load->view('templates/index.php', $data);
 		$this->load->view('templates/footer.php');
+	}
+	// Edit Sales Order
+	public function edit($id)
+	{
+		$data['view'] = 'admin/edit';
+		$data['title'] = 'Sales Order';
+		$data['order'] = $this->db->query("SELECT td.*,tc.margin, tc.nama_customer, tc.alamat,tc.tipe_harga, tu.nama as sales, tc.minimum_order, tc.tipe_harga from tb_order td
+		join tb_customer tc on td.id_customer = tc.id
+		left join tb_user tu on td.id_user = tu.id where td.id ='$id'")->row();
+		$data['detail']	= $this->db->query("SELECT tod.*, tb.kode_artikel,tb.nama_artikel,tb.satuan,tb.size,tc.margin, td.diskon from tb_order_detail tod
+		join tb_order td on tod.id_order = td.id
+		join tb_barang tb on tod.id_barang = tb.id
+		join tb_customer tc on td.id_customer = tc.id where tod.id_order = '$id' order by tb.kode_artikel asc
+		")->result();
+		$data['artikel'] = $this->db->query("SELECT * from tb_barang where id not in (SELECT id_barang from tb_order_detail where id_order = '$id')  order by kode_artikel")->result();
+		$this->load->view('templates/header.php', $data);
+		$this->load->view('templates/index.php', $data);
+		$this->load->view('templates/footer.php');
+	}
+	// ambil data artikel
+	public function getArtikel()
+	{
+		// Mengambil parameter id_barang dari permintaan Ajax
+		$id_artikel = $this->input->POST('id_artikel');
+		$id_order = $this->input->POST('id_order');
+		$query = $this->db->query("SELECT td.*,tc.tipe_harga from tb_order td
+		join tb_customer tc on td.id_customer = tc.id where td.id ='$id_order'");
+		$tipe_customer = $query->row()->tipe_harga;
+		$tipe_po = $query->row()->jenis;
+		if ($tipe_po == 1) {
+			if ($tipe_customer == 'RETAIL') {
+				$tipe = "retail";
+			} elseif ($tipe_customer == 'GROSIR') {
+				$tipe = "grosir";
+			} elseif ($tipe_customer == 'GROSIR+10') {
+				$tipe = "grosir_10";
+			} elseif ($tipe_customer == 'HET JAWA') {
+				$tipe = "het_jawa";
+			} elseif ($tipe_customer == 'INDO BARAT') {
+				$tipe = "indo_barat";
+			}
+		} elseif ($tipe_po == 2) {
+			$tipe = "special_price";
+		} elseif ($tipe_po == 3) {
+			$tipe = "barang_x";
+		}
+		// Mengambil data artikel dari tabel tb_barang berdasarkan id_barang
+		$artikel = $this->db->query("SELECT id,size, kode_artikel, nama_artikel, satuan, $tipe as harga from tb_barang where id = '$id_artikel'")->row();
+		header('Content-Type: application/json'); // Tambahkan header untuk menandakan bahwa respons adalah JSON
+
+		// Jika data artikel ditemukan, kirimkan objek JSON dengan atribut-artibut yang diperlukan
+		if ($artikel) {
+			$response = array(
+				'id_artikel' => $artikel->id,
+				'nama_artikel' => $artikel->nama_artikel,
+				'satuan' => $artikel->satuan,
+				'size' => $artikel->size,
+				'harga' => $artikel->harga,
+			);
+			echo json_encode($response);
+		} else {
+			// Jika data artikel tidak ditemukan, kirimkan objek JSON kosong
+			echo json_encode(array());
+		}
+	}
+	// tambah artikel
+	public function TambahArtikel()
+	{
+		$id_artikel = $this->input->post('id_artikel');
+		$qty = $this->input->post('qty');
+		$harga = $this->input->post('harga');
+		$margin = $this->input->post('margin');
+		$id_order = $this->input->post('id_order');
+		$data = array(
+			'id_order'	=> $id_order,
+			'id_barang'	=> $id_artikel,
+			'qty'	=> $qty,
+			'harga'	=> $harga,
+			'diskon_barang'	=> $margin,
+		);
+		$this->db->insert('tb_order_detail', $data);
+		tampil_alert('success', 'BERHASIL', 'Data Artikel berhasil di tambahkan');
+		redirect($_SERVER['HTTP_REFERER']);
+	}
+	// hapus data
+	public function hapus_list($id)
+	{
+		// Proses penghapusan data berdasarkan ID
+		$this->db->where('id', $id);
+		$this->db->delete('tb_order_detail');
+		tampil_alert('success', 'DI HAPUS', 'Data Barang berhasil di hapus');
+		// Redirect ke halaman sebelumnya
+		redirect($_SERVER['HTTP_REFERER']);
 	}
 	// pratinjau Sales Order
 	public function detail($id)
@@ -71,8 +164,9 @@ class Order extends CI_Controller
 	public function update_po()
 	{
 		$id_detail	= $this->input->post('id_detail');
-		$id_order	= $this->input->post('id_order');
-		$qty_update	= $this->input->post('qty_update');
+		$no_order	= $this->input->post('no_order');
+		$qty_update	= $this->input->post('qty_edit');
+		$no_po		= $this->input->post('no_po');
 		$tanggal	= $this->input->post('tanggal');
 		$jml	= count($id_detail);
 		$this->db->trans_start();
@@ -82,14 +176,14 @@ class Order extends CI_Controller
 			);
 			$where = array(
 				'id'	=> $id_detail[$i],
-				'id_order'	=> $id_order
+				'id_order'	=> $no_order
 			);
 			$this->db->update('tb_order_detail', $data, $where);
 		}
-		$this->db->update('tb_order', array('tanggal_dibuat' => $tanggal), array('id' => $id_order));
+		$this->db->update('tb_order', array('tanggal_dibuat' => $tanggal, 'referensi' => $no_po), array('id' => $no_order));
 		$this->db->trans_complete();
 		tampil_alert('success', 'BERHASIL', 'Data PO berhasil di update');
-		redirect(base_url('Order/detail/' . $id_order));
+		redirect(base_url('Order/detail/' . $no_order));
 	}
 	// export file
 	public function exportSo()
@@ -98,7 +192,15 @@ class Order extends CI_Controller
 		$id_order	= $this->input->post('id_order');
 		$tanggal	= $this->input->post('tanggal');
 		$no_urut	= $this->input->post('no_urut');
-		$no_faktur  = "SO-" . date('Y-m') . "-" . $no_urut;
+		date_default_timezone_set('Asia/Jakarta');
+		$tanggalHariIni = new DateTime();
+		if ($tanggalHariIni->format('d') == $tanggalHariIni->format('t')) {
+			$tanggalHariIni->add(new DateInterval('P1M'));
+		}
+		$tahunBulan = $tanggalHariIni->format('Y-m');
+		// Format nomor urutan dengan tahun dan bulan
+		$nomorUrutan = "SO-$tahunBulan";
+		$no_faktur  = $nomorUrutan . "-" . $no_urut;
 		// Get invoice data from the model
 		$query = $this->db->query("SELECT td.*, tc.no_pelanggan, tc.nama_customer, tb.kode_artikel,tb.satuan, tod.qty, tod.harga, tod.diskon_barang FROM tb_order td
         JOIN tb_order_detail tod ON td.id = tod.id_order
@@ -177,7 +279,7 @@ class Order extends CI_Controller
 				$worksheet->setCellValue('J' . $row, "");
 				$worksheet->setCellValue('K' . $row, 0);
 				$worksheet->setCellValue('L' . $row, "Sales Order");
-				$worksheet->setCellValue('M' . $row, $no_faktur);
+				$worksheet->setCellValue('M' . $row, $invoiceData->referensi);
 				$worksheet->setCellValue('N' . $row, $invoiceData->nama_customer);
 				$worksheet->setCellValue('O' . $row, "");
 				$worksheet->setCellValue('P' . $row, $id_user);

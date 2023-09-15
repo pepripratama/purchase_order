@@ -24,8 +24,9 @@
           <th>Type Harga</th>
           <th>Jenis</th>
           <th>Sales</th>
+          <th>No. PO</th>
           <th>Tgl PO</th>
-          <th>status</th>
+          <th>Status</th>
           <th style="width:10%">Action</th>
         </tr>
       </thead>
@@ -41,6 +42,7 @@
             <td><?= $d->tipe_harga ?></td>
             <td><?= jenis_so($d->jenis) ?></td>
             <td><?= $d->sales ?></td>
+            <td><?= $d->referensi ?></td>
             <td><?= $d->tanggal_dibuat ?></td>
             <td><?= status_so($d->status) ?></td>
             <td>
