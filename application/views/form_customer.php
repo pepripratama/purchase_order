@@ -40,7 +40,7 @@
       
     </div>
     <div class="card-footer d-none isi p-3">
-      <button class="btn btn-primary btn-block"><i class="fas fa-forward"></i> Lanjut</button>
+      <button class="btn btn-success btn-block"><i class="fas fa-forward"></i> Lanjut</button>
     </div>
 </div>
   </form>

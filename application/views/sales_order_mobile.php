@@ -32,7 +32,7 @@
     </div>
   </div>
   <div class="card-footer isi d-none p-3">
-    <button class="btn btn-primary btn-block" id="btnCheckout" type="button" onclick="window.location='<?= base_url('keranjang') ?>'"><i class="fas fa-forward"></i> Lanjut (<span id="jumlahCart"></span>)</button>
+    <button class="btn btn-success btn-block" id="btnCheckout" type="button" onclick="window.location='<?= base_url('keranjang') ?>'"><i class="fas fa-forward"></i> Lanjut (<span id="jumlahCart"></span>)</button>
   </div>
 </div>
 
@@ -67,18 +67,23 @@
           dataType: "json",
           data: {id_produk:id_produk,kode_artikel:kode_artikel},
           success: function(data) {
-              if (data.success)
+              if (data.message)
               {
+                Swal.fire(
+                  data.title,
+                  data.message,
+                  data.info
+                );
                 hitungCart();
-              }
-              else if (data.error)
-              {
-                hitungCart();
-
               }
           },
           error: function() {
-              alert('Item gagal ditambahkan !');
+              Swal.fire(
+                  'Gagal',
+                  'Data gagal ditambahkan, silahkan mencoba kembali !',
+                  'danger'
+                );
+              hitungCart();
           }
       });
     });
@@ -100,6 +105,8 @@
           }
       });
     }
+
+
 
     hitungCart();
 

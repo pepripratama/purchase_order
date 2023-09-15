@@ -89,3 +89,36 @@ function status_so($so)
 	}
 	return $hasil;
 }
+
+function generateKodePo(){
+	$ci = &get_instance();
+	$currentMonth = date('m');
+	$currentYear = date('Y');
+
+	$cekKodeTerakir = $ci->db->query("SELECT referensi FROM tb_order where referensi like '%/VMG/%' order by id desc LIMIT 1")->row();
+
+	// format kode yang diinginkan = 0001/VMG/01/2023
+	
+	if (!$cekKodeTerakir){
+		$noUrut = 1;
+	} else {
+		$pecahKodeTerakhir = explode('/',$cekKodeTerakir->referensi);
+		if (count($pecahKodeTerakhir) == 4) {
+			if ($currentMonth!=$pecahKodeTerakhir[2] OR $currentYear!=$pecahKodeTerakhir[3]) {
+				$noUrut = 1;
+			} else {
+				$noUrut = $pecahKodeTerakhir[0]+1;
+			}
+		} else {
+			$noUrut = 1;
+		}
+		
+	}
+
+	//ubah nomor urut menjadi 4 digit
+	$formatNoUrut = sprintf('%04d',$noUrut);
+
+	//generate kode jadi
+	$kodeJAdi =	$formatNoUrut."/VMG/".$currentMonth."/".$currentYear;
+	return $kodeJAdi;
+}

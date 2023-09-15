@@ -1,4 +1,4 @@
-<body style="height:90vh; font-size:75%">
+<body style="height:90vh;">
     <div class="container mt-3">
         <?php if (empty($view)) {
             echo"<img class='d-block w-100' src='assets/img/hicoop.jpg'></img>";
@@ -39,7 +39,7 @@ $(document).ready(function() {
   // Hide the loading screen when the page is fully loaded
   $(window).on('load', function() {
     $('#loading').fadeOut('slow', function() {
-      $(this).remove();
+      $(this).hide();
       $('.isi').removeClass('d-none',true);
     });
   });

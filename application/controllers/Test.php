@@ -66,5 +66,9 @@ class Test extends CI_Controller {
 
 	}
 
+	public function kodePo(){
+		echo generateKodePo();
+	}
+
 
 }

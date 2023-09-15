@@ -1,3 +1,4 @@
+<div style="font-size:75%">
 <?php
 if ($tipe_po == 1) {
   $tipe_po_text = "Reguler";
@@ -8,28 +9,45 @@ if ($tipe_po == 1) {
 }
 ?>
 <div class="row mb-3">
-	<div class="col-4">Nama Customer</div>
-	<div class="col">: <b><?= $nama_customer ?></b></div>
+	<div class="col-3">Nama Customer</div>
+	<div class="col-1">:</b></div>
+	<div class="col"><b><?= $nama_customer ?></b></div>
 </div>
 <div class="row mb-3">
-	<div class="col-4">Tanggal PO</div>
-	<div class="col">: <b><?= $tanggal_po ?></b></div>
+	<div class="col-3">Tanggal PO</div>
+	<div class="col-1">:</b></div>
+	<div class="col"><b><?= $tanggal_po ?></b></div>
 </div>
 <div class="row mb-3">
-	<div class="col-4">Tipe PO</div>
-	<div class="col">: <b><?= $tipe_po_text ?></b></div>
+	<div class="col-3">Tipe PO</div>
+	<div class="col-1">:</b></div>
+	<div class="col"><b><?= $tipe_po_text ?></b></div>
+</div>
+<!-- <div class="row mb-3">
+	<div class="col-3">No. Faktur</div>
+	<div class="col"><b><?= $no_faktur ?></b></div>
+</div> -->
+<div class="row mb-3">
+	<div class="col-3">No. PO</div>
+	<div class="col-1">:</b></div>
+	<div class="col"><b><?= $referensi ?></b></div>
+</div>
+<?php
+if ($status == 0) {
+  $status = "Menunggu Diproses";
+} elseif($status == 1) {
+	$status = "Sudah Diproses";
+}
+?>
+<div class="row mb-3">
+	<div class="col-3">Status PO</div>
+	<div class="col-1">:</b></div>
+	<div class="col"><b><?= $status ?></b></div>
 </div>
 <div class="row mb-3">
-	<div class="col-4">No. Faktur</div>
-	<div class="col">: <b><?= $no_faktur ?></b></div>
-</div>
-<div class="row mb-3">
-	<div class="col-4">Referensi</div>
-	<div class="col">: <b><?= $referensi ?></b></div>
-</div>
-<div class="row mb-3">
-	<div class="col-4">Catatan</div>
-	<div class="col">: <b><?= $catatan ?></b></div>
+	<div class="col-3">Catatan</div>
+	<div class="col-1">:</b></div>
+	<div class="col"><b><?= $catatan ?></b></div>
 </div>
 <table class="table">
 	<?php
@@ -65,3 +83,4 @@ if ($tipe_po == 1) {
 	</tr>
 	
 </table>
+</div>

@@ -136,8 +136,13 @@ class Keranjang extends CI_Controller {
 		$tipe_customer = $this->session->userdata('tipe_customer');
 		$tipe_po = $this->session->userdata('tipe_po');
 		$diskon_faktur = $this->input->post('diskon_faktur');
+		$referensi = $this->input->post('referensi');
 		$keranjang = $this->cart->contents();
 		$filename = time();
+
+		if ($referensi == null) {
+			$referensi = generateKodePo();
+		}
 
 		// upload file
 		$config['upload_path']          = 'assets/file/';
@@ -171,7 +176,7 @@ class Keranjang extends CI_Controller {
 			'jenis' => $tipe_po,
 			'tanggal_dibuat' => date('Y-m-d H:i:s'),
 			'diskon' => $diskon_faktur,
-			'referensi' => "-",
+			'referensi' => $referensi,
 			'no_faktur' => "-",
 			'catatan' => $catatan,
 			'file' => $filename,
@@ -218,8 +223,12 @@ class Keranjang extends CI_Controller {
 		$data = array('id_customer','nama_customer','tipe_customer','alamat_customer','tipe_po','diskon_faktur');
 		$this->session->unset_userdata($data);
 
-		$this->db->trans_complete();
-		redirect(base_url('sales_order'));
+		if($this->db->trans_complete()){
+			$data['status'] = '1';
+		}
+
+
+		echo json_encode($data);
 	}
 
 	public function subtotal(){

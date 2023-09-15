@@ -31,7 +31,8 @@ class Auth_mobile extends CI_Controller
             $user = $user->row();
             $data = [
                 'id' => $user->id,
-                'name' => $user->username,
+                'username' => $user->username,
+                'name' => $user->nama,
                 'role_id' => $user->id_role,
                 'login' => true,
             ];

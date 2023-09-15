@@ -48,7 +48,7 @@ class Sales_order extends CI_Controller {
 			$tipe = "barang_x";
 		}
 		
-		$data['produk'] = $this->db->query("SELECT id, kode_artikel, nama_artikel, satuan, $tipe as harga, size from tb_barang where $tipe > 0 order by kode_artikel")->result();
+		$data['produk'] = $this->db->query("SELECT id, kode_artikel, nama_artikel, satuan, $tipe as harga, size from tb_barang where $tipe > 0 and status=1 order by kode_artikel")->result();
 		$this->load->view('mobile/header.php',$data);
 		$this->load->view('mobile/mobile.php',$data);
 		$this->load->view('mobile/footer.php');
@@ -98,19 +98,34 @@ class Sales_order extends CI_Controller {
 		} else {
 			$diskon = "0%";
 		}
-		
 
-		$data = array(
-			'id' => $id_produk,
-			'qty' => 1,
-			'price' => 0,
-			'name' => $kode,
-			'diskon' => $diskon,
-		);
+ 		// cek di keranjang apakah sudah ada item tersebut atau belum, jika belum maka insert ke keranjanga, jika ada maka tidak insert
+		$keranjang = $this->cart->contents();
+		$cek = 0;
+		foreach ($keranjang as $k) {
+			if ($k['id'] == $id_produk) {
+				$cek = 1;
+			}
+		}
 
-		$this->cart->insert($data);
-		$data['success'] = 'Item berhasil ditambahkan !';
+		if ($cek == 1) {
+			$data['info'] = 'warning';
+			$data['title'] = 'Info';
+			$data['message'] = 'Item ini sudah ada di keranjang !';
+		} else {
+			$data = array(
+				'id' => $id_produk,
+				'qty' => 1,
+				'price' => 0,
+				'name' => $kode,
+				'diskon' => $diskon,
+			);
 
+			$insert = $this->cart->insert($data);
+			$data['info'] = 'success';
+			$data['title'] = 'Berhasil';
+			$data['message'] = 'Item berhasil ditambahkan !';
+		}
 		echo json_encode($data);
 
 
@@ -157,17 +172,23 @@ class Sales_order extends CI_Controller {
 	}
 
 	public function history(){
-		$data_history = $this->db->query("SELECT tb_order.id, tb_customer.nama_customer, tb_order.tanggal_dibuat, tb_order.jenis from tb_order join tb_customer on tb_customer.id = tb_order.id_customer order by tb_order.tanggal_dibuat desc ")->result();
+		$tanggal = $this->input->get('tanggal');
+		if (!$tanggal) {
+			$tanggal = date("Y-m-d");
+		}
+		$id_user = $this->session->userdata('id');
+		$data_history = $this->db->query("SELECT tb_order.id, tb_order.status, tb_customer.nama_customer, tb_order.tanggal_dibuat, tb_order.jenis from tb_order join tb_customer on tb_customer.id = tb_order.id_customer where tb_order.id_user = '$id_user' and date(tanggal_dibuat) = '$tanggal' order by tb_order.tanggal_dibuat desc ")->result();
 		$data['data_history'] = $data_history;
 		$data['view'] = 'history';
 		$data['title'] = 'History';
+		$data['tanggal'] = $tanggal;
 		$this->load->view('mobile/header.php',$data);
 		$this->load->view('mobile/mobile.php',$data);
 		$this->load->view('mobile/footer.php');
 	}
 
 	public function history_detail($id){
-		$data_order = $this->db->query("SELECT tb_customer.nama_customer,tb_order.tanggal_dibuat,tb_order.jenis,tb_order.no_faktur,tb_order.referensi, tb_order.diskon, tb_order.catatan from tb_order join tb_customer on tb_order.id_customer = tb_customer.id where tb_order.id = '$id' order by tb_order.tanggal_dibuat")->row();
+		$data_order = $this->db->query("SELECT tb_customer.nama_customer,tb_order.tanggal_dibuat,tb_order.jenis,tb_order.no_faktur,tb_order.referensi, tb_order.diskon, tb_order.catatan, tb_order.status from tb_order join tb_customer on tb_order.id_customer = tb_customer.id where tb_order.id = '$id' order by tb_order.tanggal_dibuat")->row();
 
 		$data_order_detail = $this->db->query("SELECT tb_barang.kode_artikel, tb_barang.satuan, tb_order_detail.qty, tb_order_detail.harga, tb_order_detail.diskon_barang from tb_order join tb_order_detail on tb_order_detail.id_order = tb_order.id join tb_barang on tb_barang.id = tb_order_detail.id_barang where tb_order.id = '$id' order by tb_order.tanggal_dibuat")->result();
 
@@ -178,6 +199,7 @@ class Sales_order extends CI_Controller {
 		$data['no_faktur'] = $data_order->no_faktur;
 		$data['referensi'] = $data_order->referensi;
 		$data['catatan'] = $data_order->catatan;
+		$data['status'] = $data_order->status;
 		$data['data_history_detail'] = $data_order_detail;
 		$this->load->view('mobile/history_detail.php',$data);
 	}
